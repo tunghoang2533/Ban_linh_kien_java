@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title th:text="${pageTitle}">Tài Khoản</title>
+    <style>
+        .account-page {
+            max-width: 760px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+        .account-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.07);
+            padding: 36px 40px;
+            border: 1px solid #e2e8f0;
+        }
+        .account-card h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 28px;
+        }
+        .info-row {
+            display: flex;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 14px 0;
+            gap: 16px;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label {
+            width: 160px;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .info-value {
+            font-size: 14.5px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .info-value.empty { color: #94a3b8; font-style: italic; }
+        .account-footer { margin-top: 28px; }
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #e2e8f0; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="account-page">
+    <div class="account-card">
+        <h1><i class="fa fa-user-circle-o" style="color:#2563eb;margin-right:10px;"></i>Thông Tin Tài Khoản</h1>
+
+        <div class="info-row">
+            <div class="info-label">Tên đăng nhập</div>
+            <div class="info-value" th:text="${user.username}">—</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Họ và tên</div>
+            <div class="info-value" th:classappend="${user.fullName == null} ? 'empty'"
+                 th:text="${user.fullName != null ? user.fullName : 'Chưa cập nhật'}">—</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Email</div>
+            <div class="info-value" th:text="${user.email}">—</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Số điện thoại</div>
+            <div class="info-value" th:classappend="${user.phone == null} ? 'empty'"
+                 th:text="${user.phone != null ? user.phone : 'Chưa cập nhật'}">—</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Ngày tham gia</div>
+            <div class="info-value"
+                 th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd/MM/yyyy') : '—'}">—</div>
+        </div>
+
+        <div class="account-footer">
+            <a th:href="@{/logout}" class="btn-logout"
+               onclick="return confirm('Bạn có chắc muốn đăng xuất?')">
+                <i class="fa fa-sign-out"></i> Đăng Xuất
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

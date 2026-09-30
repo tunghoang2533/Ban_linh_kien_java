@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Mã Giảm Giá (Voucher) - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Mã Giảm Giá &amp; Khuyến Mãi</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-ticket" style="color: #6366f1;"></i>
+                Danh Sách Voucher Hiện Có
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Mã Voucher</th>
+                        <th>Loại Giảm Giá</th>
+                        <th>Giá Trị</th>
+                        <th>Đơn Tối Thiểu</th>
+                        <th>Lượt Dùng</th>
+                        <th>Trạng Thái</th>
+                        <th style="text-align: right;">Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="v : ${vouchers}">
+                        <td>
+                            <div style="font-weight: 800; color: #4f46e5; letter-spacing: 0.05em;" th:text="${v.code}">GIAM100K</div>
+                            <div style="font-size: 12px; color: #64748b;" th:text="${v.description}">Giảm 100k cho đơn từ 2tr</div>
+                        </td>
+                        <td th:text="${v.discountType != null ? v.discountType : 'FIXED'}">FIXED</td>
+                        <td style="font-weight: 700; color: #10b981;" th:text="${#numbers.formatDecimal(v.discountValue, 0, 'POINT', 0, 'COMMA')} + ' ₫'">100.000 ₫</td>
+                        <td th:text="${#numbers.formatDecimal(v.minOrderValue != null ? v.minOrderValue : 0, 0, 'POINT', 0, 'COMMA')} + ' ₫'">2.000.000 ₫</td>
+                        <td th:text="${v.usedCount != null ? v.usedCount : 0} + ' / ' + ${v.usageLimit != null ? v.usageLimit : '&infin;'}">5 / 100</td>
+                        <td>
+                            <span class="status-badge" th:classappend="${v.isActive != null and v.isActive ? 'badge-completed' : 'badge-cancelled'}"
+                                  th:text="${v.isActive != null and v.isActive ? 'Đang áp dụng' : 'Hết hạn'}">Đang áp dụng</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <form th:action="@{'/admin/vouchers/' + ${v.id} + '/delete'}" method="post" style="display: inline-block;" onsubmit="return confirm('Bạn chắc chắn muốn xóa voucher này?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${vouchers == null or vouchers.isEmpty()}">
+                        <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Chưa có mã giảm giá nào</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title>Xây Dựng Cấu Hình PC - PC Store</title>
+    <th:block layout:fragment="styles">
+        <style>
+            /* ════════════════════════════════════════
+               BUILD PC — 3-COLUMN RESPONSIVE LAYOUT
+               ════════════════════════════════════════ */
+            .buildpc-container {
+                padding: 30px 0 60px;
+            }
+            .buildpc-header {
+                margin-bottom: 24px;
+            }
+            .buildpc-header h1 {
+                font-size: 26px;
+                font-weight: 800;
+                color: #0f172a;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .buildpc-header p {
+                color: #64748b;
+                font-size: 14.5px;
+                margin: 0;
+            }
+
+            /* Layout Grid */
+            .buildpc-layout {
+                display: grid;
+                grid-template-columns: 280px 1fr 320px;
+                gap: 24px;
+                align-items: start;
+            }
+
+            /* ── Left Column: AI Assistant Panel ── */
+            .ai-panel {
+                position: sticky;
+                top: 88px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+                display: flex;
+                flex-direction: column;
+                max-height: calc(100vh - 110px);
+            }
+            .ai-panel-header {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: #ffffff;
+                padding: 14px 18px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-shrink: 0;
+            }
+            .ai-panel-header-title {
+                font-size: 14px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .ai-dot {
+                width: 9px;
+                height: 9px;
+                background: #4ade80;
+                border-radius: 50%;
+                box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.35);
+                animation: pulse-dot 2s infinite;
+            }
+            @keyframes pulse-dot {
+                0%, 100% { box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.35); }
+                50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0.1); }
+            }
+            .ai-panel-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 14px 12px;
+                background: #f8fafc;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-height: 140px;
+            }
+            .cb-msg {
+                max-width: 95%;
+                padding: 10px 14px;
+                border-radius: 14px;
+                font-size: 13px;
+                line-height: 1.55;
+                word-break: break-word;
+            }
+            .cb-msg.bot {
+                background: #ffffff;
+                color: #1e293b;
+                border: 1px solid #e2e8f0;
+                align-self: flex-start;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            }
+            .cb-msg.user {
+                background: #2563eb;
+                color: #ffffff;
+                align-self: flex-end;
+            }
+            .cb-msg.bot.loading {
+                color: #94a3b8;
+                font-style: italic;
+            }
+            .ai-panel-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 10px 12px;
+                background: #ffffff;
+                border-top: 1px solid #f1f5f9;
+                flex-shrink: 0;
+            }
+            .cb-chip {
+                background: #eff6ff;
+                color: #2563eb;
+                border: 1px solid #bfdbfe;
+                padding: 5px 11px;
+                border-radius: 14px;
+                font-size: 11.5px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .cb-chip:hover {
+                background: #dbeafe;
+            }
+            .ai-panel-input {
+                display: flex;
+                padding: 10px 12px;
+                background: #ffffff;
+                border-top: 1px solid #e8edf3;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .ai-panel-input input {
+                flex: 1;
+                padding: 8px 12px;
+                border: 1.5px solid #cbd5e1;
+                border-radius: 10px;
+                font-size: 13px;
+                outline: none;
+            }
+            .ai-panel-input input:focus {
+                border-color: #2563eb;
+            }
+            .ai-panel-input button {
+                background: #2563eb;
+                color: #ffffff;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: 700;
+                font-size: 13px;
+                transition: background 0.15s;
+            }
+            .ai-panel-input button:hover {
+                background: #1d4ed8;
+            }
+
+            /* ── Center Column: Hardware Components Slots ── */
+            .buildpc-components {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .component-slot {
+                background: #ffffff;
+                border: 1.5px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 18px 22px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 18px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+            .component-slot:hover {
+                border-color: #bfdbfe;
+                box-shadow: 0 6px 18px rgba(37, 99, 235, 0.06);
+            }
+            .slot-category {
+                width: 180px;
+                flex-shrink: 0;
+            }
+            .slot-category-title {
+                font-size: 13px;
+                font-weight: 700;
+                color: #2563eb;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+            .slot-category-status {
+                font-size: 12.5px;
+                color: #64748b;
+            }
+            .slot-product {
+                flex: 1;
+                min-width: 0;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+            .slot-product img {
+                width: 68px;
+                height: 68px;
+                object-fit: contain;
+                border-radius: 10px;
+                border: 1px solid #e2e8f0;
+                background: #f8fafc;
+                flex-shrink: 0;
+            }
+            .slot-product-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .slot-product-name {
+                font-size: 14px;
+                font-weight: 600;
+                color: #1e293b;
+                margin-bottom: 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .slot-product-socket {
+                display: inline-block;
+                background: #eff6ff;
+                color: #2563eb;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 11.5px;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            .slot-product-price {
+                font-size: 15px;
+                font-weight: 700;
+                color: #e11d48;
+            }
+            .slot-empty {
+                flex: 1;
+                border: 1.5px dashed #cbd5e1;
+                border-radius: 10px;
+                padding: 14px 18px;
+                color: #94a3b8;
+                font-size: 13px;
+                background: #fafafa;
+            }
+            .slot-actions {
+                display: flex;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .btn-slot-select {
+                background: #2563eb;
+                color: #ffffff;
+                border: none;
+                padding: 9px 18px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .btn-slot-select:hover {
+                background: #1d4ed8;
+            }
+            .btn-slot-change {
+                background: #0284c7;
+                color: #ffffff;
+                border: none;
+                padding: 9px 16px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+            }
+            .btn-slot-change:hover {
+                background: #0369a1;
+            }
+            .btn-slot-remove {
+                background: #fee2e2;
+                color: #dc2626;
+                border: none;
+                padding: 9px 14px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+            }
+            .btn-slot-remove:hover {
+                background: #fecaca;
+            }
+
+            /* ── Right Column: Summary Sidebar ── */
+            .buildpc-summary {
+                position: sticky;
+                top: 88px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 18px;
+                padding: 24px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            }
+            .summary-title {
+                font-size: 14px;
+                font-weight: 700;
+                color: #2563eb;
+                text-transform: uppercase;
+                margin-bottom: 14px;
+            }
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #64748b;
+                margin-bottom: 10px;
+            }
+            .summary-price {
+                font-size: 26px;
+                font-weight: 800;
+                color: #e11d48;
+                margin-bottom: 8px;
+            }
+            .summary-note {
+                font-size: 12px;
+                color: #94a3b8;
+                margin-bottom: 22px;
+                line-height: 1.5;
+            }
+            .btn-add-all-cart {
+                width: 100%;
+                background: #f59e0b;
+                color: #ffffff;
+                border: none;
+                padding: 13px 18px;
+                border-radius: 10px;
+                font-weight: 700;
+                font-size: 14px;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+                margin-bottom: 10px;
+                transition: background 0.15s;
+            }
+            .btn-add-all-cart:hover {
+                background: #d97706;
+            }
+            .btn-buy-now {
+                width: 100%;
+                background: #2563eb;
+                color: #ffffff;
+                border: none;
+                padding: 13px 18px;
+                border-radius: 10px;
+                font-weight: 700;
+                font-size: 14px;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+                margin-bottom: 10px;
+                transition: background 0.15s;
+            }
+            .btn-buy-now:hover {
+                background: #1d4ed8;
+            }
+            .btn-clear-build {
+                width: 100%;
+                background: #f1f5f9;
+                color: #64748b;
+                border: none;
+                padding: 10px 18px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .btn-clear-build:hover {
+                background: #e2e8f0;
+            }
+
+            /* ── Selector Modal ── */
+            .selector-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.55);
+                z-index: 9999;
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+            .selector-overlay.open {
+                display: flex;
+            }
+            .selector-panel {
+                width: 860px;
+                max-width: calc(100vw - 32px);
+                height: 84vh;
+                max-height: 650px;
+                background: #ffffff;
+                display: flex;
+                flex-direction: column;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+            }
+            .sp-header {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: #ffffff;
+                padding: 16px 22px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-shrink: 0;
+            }
+            .sp-header h3 {
+                font-size: 16px;
+                font-weight: 700;
+                margin: 0;
+            }
+            .sp-close-btn {
+                background: rgba(255,255,255,0.2);
+                border: none;
+                color: #ffffff;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .sp-close-btn:hover {
+                background: rgba(255,255,255,0.35);
+            }
+            .sp-body {
+                flex: 1;
+                overflow-y: auto;
+                padding: 18px 22px;
+            }
+            .sp-searchbar {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
+            }
+            .sp-searchbar input {
+                flex: 1;
+                padding: 10px 14px;
+                border: 1.5px solid #cbd5e1;
+                border-radius: 10px;
+                font-size: 13.5px;
+                outline: none;
+            }
+            .sp-searchbar input:focus {
+                border-color: #2563eb;
+            }
+            .sock-badge {
+                background: #fef9c3;
+                color: #854d0e;
+                border: 1px solid #fde047;
+                padding: 8px 14px;
+                border-radius: 8px;
+                font-size: 12.5px;
+                font-weight: 600;
+                margin-bottom: 14px;
+                display: none;
+            }
+            .prow {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px 16px;
+                margin-bottom: 10px;
+                transition: border-color 0.15s, box-shadow 0.15s;
+            }
+            .prow:hover {
+                border-color: #93c5fd;
+                box-shadow: 0 4px 12px rgba(37,99,235,0.06);
+            }
+            .prow img {
+                width: 60px;
+                height: 60px;
+                object-fit: contain;
+                border-radius: 8px;
+                border: 1px solid #f1f5f9;
+                background: #f8fafc;
+                flex-shrink: 0;
+            }
+            .pinfo {
+                flex: 1;
+                min-width: 0;
+            }
+            .pname {
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #1e293b;
+                margin-bottom: 3px;
+            }
+            .pprice {
+                font-size: 15px;
+                font-weight: 700;
+                color: #e11d48;
+            }
+            .psock {
+                display: inline-block;
+                background: #eff6ff;
+                color: #2563eb;
+                padding: 2px 8px;
+                border-radius: 5px;
+                font-size: 11px;
+                font-weight: 600;
+                margin-bottom: 3px;
+            }
+            .btn-padd {
+                background: #2563eb;
+                color: #ffffff;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+            .btn-padd:hover {
+                background: #1d4ed8;
+            }
+
+            /* Responsive */
+            @media (max-width: 1100px) {
+                .buildpc-layout {
+                    grid-template-columns: 240px 1fr 280px;
+                    gap: 16px;
+                }
+            }
+            @media (max-width: 900px) {
+                .buildpc-layout {
+                    grid-template-columns: 1fr;
+                }
+                .ai-panel {
+                    position: static;
+                    max-height: 400px;
+                }
+                .buildpc-summary {
+                    position: static;
+                }
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container buildpc-container">
+
+        <!-- Page Title & Header -->
+        <div class="buildpc-header">
+            <h1>🛠️ Xây Dựng Cấu Hình PC</h1>
+            <p>Lựa chọn linh kiện máy tính đồng bộ, tương thích 100% chuẩn chân cắm (Socket), tối ưu hiệu năng và ngân sách.</p>
+        </div>
+
+        <!-- Flash alerts -->
+        <div th:if="${success != null}" style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-weight:500;" th:text="${success}"></div>
+        <div th:if="${warning != null}" style="background:#fef9c3;border:1px solid #fde047;color:#854d0e;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-weight:500;" th:text="'⚠️ ' + ${warning}"></div>
+        <div th:if="${error != null}" style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-weight:500;" th:text="'❌ ' + ${error}"></div>
+
+        <!-- 3-Column Grid -->
+        <div class="buildpc-layout">
+
+            <!-- ── Left Column: AI Assistant Panel ── -->
+            <div class="ai-panel">
+                <div class="ai-panel-header">
+                    <div class="ai-panel-header-title">
+                        <span class="ai-dot"></span>
+                        <span>🤖 AI Trợ Lý Tư Vấn PC</span>
+                    </div>
+                </div>
+
+                <div class="ai-panel-messages" id="cbMessages">
+                    <div class="cb-msg bot">
+                        Xin chào! Tôi có thể tư vấn cấu hình tối ưu theo ngân sách và mục đích sử dụng (Gaming, Văn phòng, Đồ họa). Hãy nhập yêu cầu hoặc chọn gợi ý bên dưới!
+                    </div>
+                </div>
+
+                <div class="ai-panel-chips" id="cbSuggestions">
+                    <span class="cb-chip" onclick="sendAiMessage('Build PC gaming 15 triệu', 15000000, 'gaming')">PC Gaming 15Tr</span>
+                    <span class="cb-chip" onclick="sendAiMessage('Build PC đồ họa 25 triệu', 25000000, 'design')">PC Đồ Họa 25Tr</span>
+                    <span class="cb-chip" onclick="sendAiMessage('Build PC văn phòng 8 triệu', 8000000, 'office')">Văn Phòng 8Tr</span>
+                </div>
+
+                <div class="ai-panel-input">
+                    <input type="text" id="cbInput" placeholder="Hỏi AI cấu hình mong muốn..."
+                           onkeydown="if(event.key==='Enter') submitAiInput();">
+                    <button type="button" onclick="submitAiInput()">Gửi</button>
+                </div>
+            </div>
+
+            <!-- ── Center Column: 7 Hardware Slots ── -->
+            <div class="buildpc-components">
+                <div th:each="catEntry : ${buildCategories}" class="component-slot">
+                    <!-- Category label -->
+                    <div class="slot-category">
+                        <div class="slot-category-title" th:text="${catEntry.value}">Tên linh kiện</div>
+                        <div class="slot-category-status" th:text="${build.containsKey(catEntry.key) ? 'Đã chọn linh kiện' : 'Chưa có sản phẩm'}">Chưa có sản phẩm</div>
+                    </div>
+
+                    <!-- Selected Product -->
+                    <div class="slot-product" th:if="${build.containsKey(catEntry.key)}">
+                        <img th:src="${build.get(catEntry.key).image != null and !build.get(catEntry.key).image.startsWith('http') ? '/img/products/' + build.get(catEntry.key).image : (build.get(catEntry.key).image != null ? build.get(catEntry.key).image : '/img/logo.jpg')}"
+                             th:alt="${build.get(catEntry.key).name}">
+                        <div class="slot-product-info">
+                            <div class="slot-product-name" th:text="${build.get(catEntry.key).name}">Tên sản phẩm</div>
+                            <div th:if="${build.get(catEntry.key).socket != null and !build.get(catEntry.key).socket.isBlank()}">
+                                <span class="slot-product-socket" th:text="'Socket: ' + ${build.get(catEntry.key).socket}">Socket</span>
+                            </div>
+                            <div class="slot-product-price" th:text="${#numbers.formatDecimal(build.get(catEntry.key).price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                        </div>
+                    </div>
+
+                    <!-- Empty Slot -->
+                    <div class="slot-empty" th:unless="${build.containsKey(catEntry.key)}">
+                        Chưa có sản phẩm. Nhấn "Chọn" để thêm linh kiện.
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="slot-actions">
+                        <button type="button"
+                                th:class="${build.containsKey(catEntry.key) ? 'btn-slot-change' : 'btn-slot-select'}"
+                                th:data-cat-id="${catEntry.key}"
+                                th:data-cat-name="${catEntry.value}"
+                                onclick="openSelector(this.getAttribute('data-cat-id'), this.getAttribute('data-cat-name'))"
+                                th:text="${build.containsKey(catEntry.key) ? 'Đổi' : 'Chọn'}">
+                            Chọn
+                        </button>
+
+                        <form th:if="${build.containsKey(catEntry.key)}" th:action="@{/build-pc/remove}" method="post" style="display:inline;">
+                            <input type="hidden" name="category_id" th:value="${catEntry.key}">
+                            <button type="submit" class="btn-slot-remove">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Right Column: Price Summary Sidebar ── -->
+            <div class="buildpc-summary">
+                <div class="summary-title">Chi Phí Ước Tính</div>
+                <div class="summary-row">
+                    <span>Linh kiện đã chọn:</span>
+                    <strong style="color:#0f172a;" th:text="${selectedCount} + ' / ' + ${buildCategories.size()}">0 / 7</strong>
+                </div>
+                <div class="summary-price" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                <div class="summary-note">Đã bao gồm VAT. Chưa bao gồm chi phí lắp ráp và vận chuyển.</div>
+
+                <th:block th:if="${selectedCount > 0}">
+                    <form th:action="@{/build-pc/add-to-cart}" method="post">
+                        <button type="submit" class="btn-add-all-cart">
+                            🛒 Thêm tất cả vào giỏ hàng
+                        </button>
+                    </form>
+
+                    <form th:action="@{/build-pc/add-to-cart}" method="post">
+                        <input type="hidden" name="action" value="buy_now">
+                        <button type="submit" class="btn-buy-now">
+                            ⚡ Mua ngay
+                        </button>
+                    </form>
+
+                    <form th:action="@{/build-pc/clear}" method="post">
+                        <button type="submit" class="btn-clear-build" onclick="return confirm('Bạn có chắc chắn muốn làm mới toàn bộ cấu hình?');">
+                            🔄 Làm mới cấu hình
+                        </button>
+                    </form>
+                </th:block>
+
+                <div th:unless="${selectedCount > 0}" style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:16px;text-align:center;color:#94a3b8;font-size:13px;">
+                    Chưa có linh kiện nào trong cấu hình. Hãy chọn linh kiện ở giữa để bắt đầu!
+                </div>
+            </div>
+
+        </div><!-- end .buildpc-layout -->
+
+    </div><!-- end .container -->
+
+    <!-- ── Component Selector Modal ── -->
+    <div class="selector-overlay" id="selectorOverlay" onclick="if(event.target===this) closeSelector();">
+        <div class="selector-panel">
+            <div class="sp-header">
+                <h3 id="spCategoryTitle">Chọn linh kiện</h3>
+                <button type="button" class="sp-close-btn" onclick="closeSelector();">&times;</button>
+            </div>
+            <div class="sp-body">
+                <div class="sock-badge" id="sockBadge"></div>
+                <div class="sp-searchbar">
+                    <input type="text" id="spSearchInput" placeholder="Tìm kiếm tên sản phẩm..." oninput="filterProducts();">
+                </div>
+                <div id="spProductList"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block layout:fragment="scripts">
+    <script>
+        let currentCatId = null;
+        let cachedProducts = [];
+
+        function openSelector(catId, catName) {
+            currentCatId = catId;
+            document.getElementById('spCategoryTitle').innerText = 'Chọn ' + catName;
+            document.getElementById('selectorOverlay').classList.add('open');
+            document.getElementById('spProductList').innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Đang tải danh sách linh kiện...</div>';
+            document.getElementById('spSearchInput').value = '';
+
+            fetch('/build-pc/components?category_id=' + catId)
+                .then(res => res.json())
+                .then(data => {
+                    cachedProducts = data.products || [];
+                    const sockBadge = document.getElementById('sockBadge');
+                    if (data.req_sock) {
+                        sockBadge.innerText = '🔌 Đang lọc linh kiện tương thích Socket: ' + data.req_sock;
+                        sockBadge.style.display = 'block';
+                    } else {
+                        sockBadge.style.display = 'none';
+                    }
+                    renderProducts(cachedProducts);
+                })
+                .catch(() => {
+                    document.getElementById('spProductList').innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Có lỗi khi tải danh sách linh kiện.</div>';
+                });
+        }
+
+        function closeSelector() {
+            document.getElementById('selectorOverlay').classList.remove('open');
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('spProductList');
+            if (!products || !products.length) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">Không tìm thấy linh kiện phù hợp.</div>';
+                return;
+            }
+            let html = '';
+            products.forEach(p => {
+                const sockHtml = p.socket ? `<span class="psock">Socket: ${p.socket}</span>` : '';
+                const imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '/img/products/' + p.image) : '/img/logo.jpg';
+                html += `
+                    <div class="prow">
+                        <img src="${imgSrc}" alt="${p.name}">
+                        <div class="pinfo">
+                            <div class="pname">${p.name}</div>
+                            ${sockHtml}
+                            <div class="pprice">${new Intl.NumberFormat('vi-VN').format(p.price)} ₫</div>
+                        </div>
+                        <button type="button" class="btn-padd" onclick="selectProduct(${p.id})">Chọn</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterProducts() {
+            const q = document.getElementById('spSearchInput').value.toLowerCase().trim();
+            if (!q) { renderProducts(cachedProducts); return; }
+            renderProducts(cachedProducts.filter(p => p.name.toLowerCase().includes(q)));
+        }
+
+        function selectProduct(productId) {
+            fetch('/build-pc/select', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ category_id: currentCatId, product_id: productId, quantity: 1 })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) { window.location.reload(); }
+                else { alert(data.message || 'Lỗi khi chọn linh kiện.'); }
+            })
+            .catch(() => window.location.reload());
+        }
+
+        /* ════════ AI Panel Logic ════════ */
+        function submitAiInput() {
+            const input = document.getElementById('cbInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            sendAiMessage(msg);
+        }
+
+        function sendAiMessage(message, budget = null, purpose = null) {
+            const msgContainer = document.getElementById('cbMessages');
+
+            // Render user bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'cb-msg user';
+            userBubble.textContent = message;
+            msgContainer.appendChild(userBubble);
+
+            // Loading bubble
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'cb-msg bot loading';
+            loadingBubble.id = 'cbLoading';
+            loadingBubble.textContent = 'Đang phân tích cấu hình...';
+            msgContainer.appendChild(loadingBubble);
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            fetch('/build-pc/ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ message, budget, purpose })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('cbLoading')?.remove();
+
+                const botBubble = document.createElement('div');
+                botBubble.className = 'cb-msg bot';
+                botBubble.innerHTML = (data.reply || '').replace(/\n/g, '<br>');
+                msgContainer.appendChild(botBubble);
+
+                if (data.build_suggestion && data.build_suggestion.length > 0) {
+                    window.lastAiBuild = data.build_suggestion;
+                }
+
+                if (data.suggestions && data.suggestions.length > 0) {
+                    const sugBox = document.getElementById('cbSuggestions');
+                    sugBox.innerHTML = '';
+                    data.suggestions.forEach(s => {
+                        const chip = document.createElement('span');
+                        chip.className = 'cb-chip';
+                        chip.textContent = s;
+                        chip.onclick = () => {
+                            if (s === 'Áp dụng cấu hình này' && window.lastAiBuild) {
+                                applyAiBuild(window.lastAiBuild);
+                            } else {
+                                sendAiMessage(s);
+                            }
+                        };
+                        sugBox.appendChild(chip);
+                    });
+                }
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            })
+            .catch(() => {
+                document.getElementById('cbLoading')?.remove();
+                const errBubble = document.createElement('div');
+                errBubble.className = 'cb-msg bot';
+                errBubble.textContent = 'Có lỗi kết nối trợ lý AI. Vui lòng thử lại.';
+                msgContainer.appendChild(errBubble);
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            });
+        }
+
+        function applyAiBuild(buildList) {
+            let completed = 0;
+            buildList.forEach(item => {
+                fetch('/build-pc/select', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ category_id: item.cat_id, product_id: item.product_id, quantity: 1 })
+                }).finally(() => {
+                    completed++;
+                    if (completed === buildList.length) { window.location.reload(); }
+                });
+            });
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeSelector(); }
+        });
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Báo Có Hàng - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Đăng Ký Nhận Thông Báo Khi Có Hàng Về</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-bell-o" style="color: #3b82f6;"></i>
+                Danh Sách Khách Hàng Chờ Hàng Về
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Sản Phẩm Yêu Cầu</th>
+                        <th>Email Khách Hàng</th>
+                        <th>Ngày Đăng Ký</th>
+                        <th>Tình Trạng Kho</th>
+                        <th>Trạng Thái</th>
+                        <th style="text-align: right;">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: #0f172a;">CPU AMD Ryzen 7 5700X</td>
+                        <td>customer.amd@gmail.com</td>
+                        <td style="font-size: 12px; color: #64748b;">22/09/2026</td>
+                        <td><span class="status-badge badge-completed">Đã có hàng (Tồn: 8)</span></td>
+                        <td><span class="status-badge badge-pending">Chờ gửi mail</span></td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-primary btn-sm" onclick="alert('Đã gửi email tự động thông báo hàng về!')">
+                                <i class="fa fa-paper-plane"></i> Gửi thông báo
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

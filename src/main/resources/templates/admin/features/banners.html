@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Banner Slideshow - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Banner Slideshow Trang Chủ</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-picture-o" style="color: #6366f1;"></i>
+                Danh Sách Banners
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Ảnh Banner</th>
+                        <th>Tiêu Đề</th>
+                        <th>Tag / Nút Bấm</th>
+                        <th>Đường Dẫn URL</th>
+                        <th>Thứ Tự</th>
+                        <th>Trạng Thái</th>
+                        <th style="text-align: right;">Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b : ${banners}">
+                        <td>
+                            <img th:if="${b.image != null and !b.image.isEmpty()}"
+                                 th:src="@{'/img/banners/' + ${b.image}}"
+                                 style="width: 110px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;"
+                                 alt="Banner">
+                            <span th:if="${b.image == null or b.image.isEmpty()}" style="color: #94a3b8; font-size: 12px;">Không có ảnh</span>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;" th:text="${b.title}">Banner Khuyến Mãi</div>
+                            <div style="font-size: 12px; color: #64748b;" th:text="${b.subtitle}">Giảm giá sốc mùa hè</div>
+                        </td>
+                        <td>
+                            <span class="status-badge badge-processing" th:text="${b.tag}">HOT SALE</span>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 4px;" th:text="${b.btnText}">Xem ngay</div>
+                        </td>
+                        <td style="font-size: 12px; color: #6366f1;" th:text="${b.btnUrl}">/san-pham</td>
+                        <td style="font-weight: 700;" th:text="${b.sortOrder != null ? b.sortOrder : 0}">1</td>
+                        <td>
+                            <span class="status-badge" th:classappend="${b.isActive != null and b.isActive ? 'badge-completed' : 'badge-cancelled'}"
+                                  th:text="${b.isActive != null and b.isActive ? 'Hiển thị' : 'Ẩn'}">Hiển thị</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <form th:action="@{'/admin/banners/' + ${b.id} + '/delete'}" method="post" style="display: inline-block;" onsubmit="return confirm('Bạn chắc chắn muốn xóa banner này?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${banners == null or banners.isEmpty()}">
+                        <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Chưa có banner nào được tạo</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

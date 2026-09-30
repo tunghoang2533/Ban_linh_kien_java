@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Quản Lý Bình Luận - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý &amp; Kiểm Duyệt Đánh Giá / Bình Luận</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-star-o" style="color: #f59e0b;"></i>
+                Danh Sách Bình Luận Đánh Giá Sản Phẩm
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Người Bình Luận</th>
+                        <th>Sản Phẩm</th>
+                        <th>Đánh Giá</th>
+                        <th>Nội Dung</th>
+                        <th>Thời Gian</th>
+                        <th style="text-align: right;">Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${comments}">
+                        <td>
+                            <div style="font-weight: 600; color: #0f172a;" th:text="${c.userName != null ? c.userName : 'Khách hàng'}">Nguyễn Văn B</div>
+                            <div style="font-size: 12px; color: #64748b;" th:text="${c.userEmail}">khach@gmail.com</div>
+                        </td>
+                        <td style="font-weight: 600; color: #4f46e5;" th:text="${c.product != null ? c.product.name : 'Sản phẩm #' + c.productId}">MSI MAG FORGE 100R</td>
+                        <td>
+                            <span style="color: #f59e0b; font-weight: 700;">
+                                <i class="fa fa-star"></i> <span th:text="${c.rating != null ? c.rating : 5}">5</span>/5
+                            </span>
+                        </td>
+                        <td style="color: #334155; max-width: 300px;" th:text="${c.content}">Sản phẩm đóng gói cẩn thận, giao nhanh, chạy rất mát và êm!</td>
+                        <td style="font-size: 12px; color: #64748b;" th:text="${c.createdAt != null ? #temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">24/09/2026</td>
+                        <td style="text-align: right;">
+                            <form th:action="@{'/admin/comments/' + ${c.id} + '/delete'}" method="post" style="display: inline-block;" onsubmit="return confirm('Bạn chắc chắn muốn xóa bình luận này?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${comments == null or comments.isEmpty()}">
+                        <td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Chưa có bình luận đánh giá nào cần duyệt</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

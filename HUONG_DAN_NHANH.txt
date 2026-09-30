@@ -1,0 +1,44 @@
+================================================================================
+           HƯỚNG DẪN NHANH CÁCH CHẠY DỰ ÁN BAN_LINH_KIEN_JAVA
+================================================================================
+
+1. YÊU CẦU:
+   - Máy tính đã cài Java (JDK 17 hoặc JDK 21).
+   - MySQL 8.x đang chạy (có thể dùng Laragon hoặc XAMPP).
+
+2. IMPORT CƠ SỞ DỮ LIỆU:
+   - Mở Laragon (hoặc XAMPP) bật MySQL.
+   - Dùng phpMyAdmin / HeidiSQL import file: "db_ban_linh_kien.sql"
+     (Hoặc click đúp file "import_db.bat" để nạp tự động).
+
+3. CẤU HÌNH MẬT KHẨU DATABASE (NẾU KHÁC):
+   - Mở file: src/main/resources/application.yml
+   - Mặc định mật khẩu đang để trống (phù hợp XAMPP / Laragon mặc định):
+       password: ${DB_PASSWORD:}
+   - Nếu MySQL của bạn có mật khẩu (ví dụ 123456 hoặc root):
+     thay thành:
+       password: ${DB_PASSWORD:123456}
+     (hoặc đặt biến môi trường DB_PASSWORD).
+
+4. CHẠY WEBSITE:
+   - Cách 1 (Nhanh nhất): Click đúp chuột vào file "run.bat"
+   - Cách 2: Mở CMD tại thư mục này, gõ:
+       mvnw.cmd spring-boot:run
+   - Cách 3: Mở trong IntelliJ IDEA / Eclipse -> Run file BanLinhKienApplication.java
+
+5. TRUY CẬP WEBSITE VÀ TÀI KHOẢN:
+   - Trang chủ:          http://localhost:8088
+   - Trang đăng nhập:     http://localhost:8088/login
+   - Trang quản trị viên: http://localhost:8088/admin
+
+   * TÀI KHOẢN ADMIN:
+     Username: admin
+     Password: admin123
+
+   * TÀI KHOẢN KHÁCH HÀNG TEST:
+     Username: nguyenvana
+     Password: password
+     (hoặc test2 / 12345678)
+
+================================================================================
+(Chi tiết xem thêm tại file HUONG_DAN_CAI_DAT.md)

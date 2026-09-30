@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Quản Lý Thương Hiệu - Quản Trị</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800;">Quản Lý Danh Mục &amp; Nhãn Hàng</h2>
+        <div style="display: flex; gap: 8px;">
+            <a th:href="@{/admin/categories}" class="btn btn-secondary btn-sm"><i class="fa fa-tags"></i> Danh Mục</a>
+            <a th:href="@{/admin/brands}" class="btn btn-primary btn-sm"><i class="fa fa-trademark"></i> Nhãn Hàng (Thương Hiệu)</a>
+        </div>
+    </div>
+
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+        <!-- Left: Form -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">
+                    <i class="fa fa-plus-circle" style="color: #2563eb;"></i>
+                    <span id="brandFormTitle">Thêm Thương Hiệu Mới</span>
+                </div>
+            </div>
+            <div class="admin-card-body">
+                <form th:action="@{/admin/brands/save}" method="post">
+                    <input type="hidden" id="brandId" name="id">
+
+                    <div class="form-group">
+                        <label class="form-label">Tên thương hiệu <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="brandName" name="name" class="form-control"
+                               placeholder="Ví dụ: ASUS, Intel, Corsair..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tên file ảnh logo</label>
+                        <input type="text" id="brandImage" name="image" class="form-control"
+                               placeholder="Ví dụ: asus_logo.png">
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                            <i class="fa fa-save"></i> Lưu Thương Hiệu
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetBrandForm()">
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right: Table -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">
+                    <i class="fa fa-trademark" style="color: #10b981;"></i> Danh Sách Thương Hiệu
+                </div>
+            </div>
+            <div class="admin-card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 70px;">ID</th>
+                            <th>Tên thương hiệu</th>
+                            <th>Logo / File ảnh</th>
+                            <th style="text-align: right; width: 120px;">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="b : ${brands}">
+                            <td style="font-weight: 700; color: #64748b;" th:text="'#' + ${b.id}">#1</td>
+                            <td style="font-weight: 600; color: #0f172a;" th:text="${b.name}">Intel</td>
+                            <td>
+                                <span th:if="${b.image != null and !b.image.isEmpty()}" th:text="${b.image}" style="font-family: monospace; color: #64748b;">intel.png</span>
+                                <span th:unless="${b.image != null and !b.image.isEmpty()}" style="color: #94a3b8;">-</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: inline-flex; gap: 6px;">
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            th:data-id="${b.id}"
+                                            th:data-name="${b.name}"
+                                            th:data-image="${b.image}"
+                                            onclick="editBrand(this)" title="Chỉnh sửa">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                    <form th:action="@{'/admin/brands/' + ${b.id} + '/delete'}" method="post"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa thương hiệu này?');">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${brands == null or brands.isEmpty()}">
+                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 24px;">Chưa có thương hiệu nào.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        function editBrand(btn) {
+            document.getElementById('brandFormTitle').innerText = 'Chỉnh Sửa Thương Hiệu #' + btn.getAttribute('data-id');
+            document.getElementById('brandId').value = btn.getAttribute('data-id');
+            document.getElementById('brandName').value = btn.getAttribute('data-name');
+            document.getElementById('brandImage').value = btn.getAttribute('data-image');
+        }
+
+        function resetBrandForm() {
+            document.getElementById('brandFormTitle').innerText = 'Thêm Thương Hiệu Mới';
+            document.getElementById('brandId').value = '';
+            document.getElementById('brandName').value = '';
+            document.getElementById('brandImage').value = '';
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

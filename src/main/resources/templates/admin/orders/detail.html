@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title th:text="'Chi Tiết Đơn Hàng #' + ${order.id} + ' - Quản Trị'">Chi Tiết Đơn Hàng</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <a th:href="@{/admin/orders}" style="color: #64748b; text-decoration: none; font-size: 13.5px;">
+                <i class="fa fa-arrow-left"></i> Quay lại danh sách đơn hàng
+            </a>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+                <h2 style="font-size: 22px; font-weight: 800;" th:text="'Đơn Hàng #' + ${order.id}">Đơn Hàng #1</h2>
+                <span class="status-badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}">pending</span>
+                <span class="status-badge" th:classappend="'badge-' + ${order.paymentStatus}"
+                      th:text="${order.paymentStatus == T(com.banlinhkien.enums.PaymentStatus).paid ? 'Đã thanh toán' : (order.paymentStatus == T(com.banlinhkien.enums.PaymentStatus).refunded ? 'Đã hoàn tiền' : 'Chưa thanh toán')}">
+                    Chưa thanh toán
+                </span>
+            </div>
+        </div>
+        <div style="font-size: 13.5px; color: #64748b;">
+            Ngày đặt: <strong th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm:ss')}">09/09/2026</strong>
+        </div>
+    </div>
+
+    <!-- Status Transition Card -->
+    <div class="admin-card" style="border-left: 4px solid #2563eb;">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-refresh" style="color: #2563eb;"></i> Cập Nhật Trạng Thái Đơn Hàng &amp; Vận Chuyển
+            </div>
+        </div>
+        <div class="admin-card-body">
+            <form th:action="@{'/admin/orders/' + ${order.id} + '/status'}" method="post" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label class="form-label">Trạng thái mới:</label>
+                    <select name="status" class="form-control" th:disabled="${order.status.name() == 'cancelled'}">
+                        <option th:each="st : ${orderStatuses}" th:value="${st}" th:text="${st}"
+                                th:selected="${st == order.status}">pending</option>
+                    </select>
+                </div>
+
+                <div style="flex: 1; min-width: 200px;">
+                    <label class="form-label">Mã vận đơn (nếu có):</label>
+                    <input type="text" name="trackingCode" class="form-control" placeholder="VNPost / GHTK..."
+                           th:value="${order.trackingCode}" th:disabled="${order.status.name() == 'cancelled'}">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="height: 40px;" th:disabled="${order.status.name() == 'cancelled'}"
+                        onclick="return confirm('Bạn có chắc chắn muốn cập nhật trạng thái đơn hàng này?');">
+                    <i class="fa fa-save"></i> Cập Nhật
+                </button>
+            </form>
+
+            <div th:if="${order.status.name() == 'cancelled'}" style="margin-top: 12px; font-size: 13px; color: #dc2626; font-weight: 600;">
+                <i class="fa fa-info-circle"></i> Đơn hàng này đã bị hủy. Toàn bộ tồn kho đã được hoàn lại an toàn và không thể đổi trạng thái khác.
+            </div>
+            <div th:if="${order.status.name() != 'cancelled'}" style="margin-top: 10px; font-size: 12.5px; color: #64748b;">
+                <i class="fa fa-shield"></i> Cơ chế an toàn: Nếu hủy đơn hàng, hệ thống sẽ kích hoạt <strong>Khóa Bi Quan (Pessimistic Lock)</strong> hoàn tồn kho tức thời và chuyển trạng thái thanh toán sang <strong>Đã hoàn tiền (Refunded)</strong>.
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+        <!-- Left: Line Items & Warehouse Logs -->
+        <div>
+            <!-- Order Items Card -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-title">
+                        <i class="fa fa-shopping-cart" style="color: #2563eb;"></i> Danh Sách Sản Phẩm Đặt Mua
+                    </div>
+                </div>
+                <div class="admin-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th style="text-align: right;">Đơn giá</th>
+                                <th style="text-align: center;">SL</th>
+                                <th style="text-align: right;">Thành tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="it : ${order.items}">
+                                <td>
+                                    <div style="font-weight: 600; color: #0f172a;" th:text="${it.productName}">Intel Core i5-13600K</div>
+                                    <div style="font-size: 12px; color: #64748b;" th:text="'Mã SP: #' + ${it.productId}">Mã SP: #1</div>
+                                </td>
+                                <td style="text-align: right;" th:text="${#numbers.formatDecimal(it.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">7.500.000 đ</td>
+                                <td style="text-align: center; font-weight: 700;" th:text="${it.quantity}">1</td>
+                                <td style="text-align: right; font-weight: 700; color: #0f172a;"
+                                    th:text="${#numbers.formatDecimal(it.subtotal, 0, 'COMMA', 0, 'POINT')} + ' đ'">7.500.000 đ</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Payment Calculation Summary -->
+                    <div style="padding: 20px; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: flex-end;">
+                            <div style="width: 320px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13.5px;">
+                                    <span style="color: #64748b;">Phí vận chuyển:</span>
+                                    <strong th:text="${#numbers.formatDecimal(order.shippingFee, 0, 'COMMA', 0, 'POINT')} + ' đ'">30.000 đ</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13.5px;"
+                                     th:if="${order.discountAmount != null and order.discountAmount > 0}">
+                                    <span style="color: #64748b;">Giảm giá voucher (<span th:text="${order.voucherCode}">CODE</span>):</span>
+                                    <strong style="color: #10b981;" th:text="'-' + ${#numbers.formatDecimal(order.discountAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">-50.000 đ</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 2px solid #e2e8f0; font-size: 16px;">
+                                    <span style="font-weight: 700;">Tổng thanh toán:</span>
+                                    <strong style="font-size: 18px; color: #2563eb;"
+                                            th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">7.480.000 đ</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warehouse Audit Trail -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-title">
+                        <i class="fa fa-history" style="color: #ea580c;"></i> Nhật Ký Tồn Kho Liên Quan (Warehouse Logs)
+                    </div>
+                </div>
+                <div class="admin-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Mã SP</th>
+                                <th>Loại nghiệp vụ</th>
+                                <th style="text-align: center;">Số lượng</th>
+                                <th>Lý do &amp; Ghi chú</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="wl : ${warehouseLogs}">
+                                <td style="font-size: 12.5px; color: #64748b;" th:text="${#temporals.format(wl.createdAt, 'dd/MM/yyyy HH:mm:ss')}">
+                                    09/09/2026 11:00
+                                </td>
+                                <td style="font-weight: 600;" th:text="'#' + ${wl.productId}">#1</td>
+                                <td>
+                                    <span th:if="${wl.type.name() == 'EXPORT'}" style="background: #eff6ff; color: #1d4ed8; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
+                                        Xuất kho (Bán hàng)
+                                    </span>
+                                    <span th:if="${wl.type.name() == 'IMPORT'}" style="background: #ecfdf5; color: #047857; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
+                                        Nhập hoàn kho
+                                    </span>
+                                </td>
+                                <td style="text-align: center; font-weight: 800;" th:text="${wl.quantity}">1</td>
+                                <td>
+                                    <div style="font-size: 13px; font-weight: 500;" th:text="${wl.note}">Xuất kho đơn hàng #1</div>
+                                    <div style="font-size: 11.5px; color: #94a3b8;" th:text="'Lý do: ' + ${wl.reason}">Lý do: sale</div>
+                                </td>
+                            </tr>
+                            <tr th:if="${warehouseLogs == null or warehouseLogs.isEmpty()}">
+                                <td colspan="5" style="text-align: center; color: #94a3b8; padding: 20px;">
+                                    Chưa có bản ghi nhật ký kho nào cho đơn hàng này.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Customer, Delivery & Payment Info -->
+        <div>
+            <!-- Customer Info -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-title">
+                        <i class="fa fa-user" style="color: #10b981;"></i> Thông Tin Khách Hàng
+                    </div>
+                </div>
+                <div class="admin-card-body" style="font-size: 13.5px; line-height: 1.8;">
+                    <div>Họ và tên: <strong th:text="${order.customerName}">Nguyễn Văn A</strong></div>
+                    <div>Điện thoại: <strong th:text="${order.customerPhone}">0987654321</strong></div>
+                    <div>Email: <span th:text="${order.customerEmail != null ? order.customerEmail : 'Không cung cấp'}">a@example.com</span></div>
+                    <div>Tài khoản hệ thống:
+                        <span th:if="${order.userId != null}" style="color: #2563eb; font-weight: 600;" th:text="'ID: #' + ${order.userId}">#1</span>
+                        <span th:unless="${order.userId != null}" style="color: #94a3b8;">Khách vãng lai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-title">
+                        <i class="fa fa-map-marker" style="color: #ea580c;"></i> Địa Chỉ Giao Hàng
+                    </div>
+                </div>
+                <div class="admin-card-body" style="font-size: 13.5px; line-height: 1.6;">
+                    <div style="font-weight: 600; color: #0f172a;" th:text="${order.customerAddress}">
+                        Số 123 Đường Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy
+                    </div>
+                    <div style="color: #64748b; margin-top: 4px;" th:text="'Tỉnh/Thành phố: ' + ${order.shippingProvince}">
+                        Tỉnh/Thành phố: Hà Nội
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-title">
+                        <i class="fa fa-credit-card" style="color: #9333ea;"></i> Thông Tin Thanh Toán
+                    </div>
+                </div>
+                <div class="admin-card-body" style="font-size: 13.5px; line-height: 1.8;">
+                    <div>Phương thức: <strong style="text-transform: uppercase;" th:text="${order.paymentMethod}">VNPAY</strong></div>
+                    <div>Trạng thái:
+                        <span class="status-badge" th:classappend="'badge-' + ${order.paymentStatus}"
+                              th:text="${order.paymentStatus == T(com.banlinhkien.enums.PaymentStatus).paid ? 'Đã thanh toán' : (order.paymentStatus == T(com.banlinhkien.enums.PaymentStatus).refunded ? 'Đã hoàn tiền' : 'Chưa thanh toán')}">
+                            Đã thanh toán
+                        </span>
+                    </div>
+                    <div th:if="${order.vnpayTransaction != null and !order.vnpayTransaction.isEmpty()}">
+                        Mã giao dịch VNPay: <strong style="color: #2563eb;" th:text="${order.vnpayTransaction}">VNP123456</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

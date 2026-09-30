@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title>Đặt hàng thành công - PC Store</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .success-container {
+                max-width: 800px;
+                margin: 50px auto 80px;
+            }
+            .success-card {
+                background: #ffffff;
+                border-radius: 20px;
+                border: 1px solid #e2e8f0;
+                padding: 40px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+                text-align: center;
+            }
+            .success-icon-wrap {
+                width: 76px;
+                height: 76px;
+                background: #dcfce7;
+                color: #16a34a;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 38px;
+                margin-bottom: 20px;
+            }
+            .order-badge {
+                display: inline-block;
+                background: #f1f5f9;
+                color: #334155;
+                font-size: 15px;
+                font-weight: 700;
+                padding: 6px 16px;
+                border-radius: 9999px;
+                margin: 12px 0 24px;
+            }
+            .info-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                text-align: left;
+                background: #f8fafc;
+                border-radius: 14px;
+                padding: 20px 24px;
+                margin-bottom: 28px;
+                font-size: 14px;
+            }
+            @media (max-width: 600px) {
+                .info-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            .items-table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+                margin-bottom: 24px;
+                font-size: 14px;
+            }
+            .items-table th {
+                background: #f1f5f9;
+                padding: 12px 16px;
+                font-weight: 700;
+                color: #475569;
+            }
+            .items-table td {
+                padding: 14px 16px;
+                border-bottom: 1px solid #f1f5f9;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container success-container">
+            <div class="success-card">
+                <div class="success-icon-wrap">
+                    <i class="fa fa-check"></i>
+                </div>
+                <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0;">Đặt Hàng Thành Công!</h1>
+                <p style="color: #64748b; font-size: 15px; margin-top: 8px;">Cảm ơn quý khách đã mua sắm tại PC Store. Đơn hàng của bạn đã được ghi nhận.</p>
+
+                <div class="order-badge">
+                    Mã đơn hàng: <span style="color: #2563eb;" th:text="'#' + ${order.id}">#1</span>
+                </div>
+
+                <!-- VNPay alerts -->
+                <div th:if="${vnpaySuccess != null or (param.payment != null and param.payment[0] == 'success')}"
+                     style="background: #f0fdf4; border: 1.5px solid #86efac; color: #166534; padding: 12px 20px; border-radius: 10px; margin-bottom: 22px; font-weight: 600; text-align: left;">
+                    <i class="fa fa-check-circle" style="color: #16a34a; font-size: 16px;"></i>
+                    <span th:text="${vnpaySuccess != null ? vnpaySuccess : 'Thanh toán trực tuyến qua VNPAY thành công!'}">Thanh toán thành công!</span>
+                </div>
+
+                <div th:if="${vnpayError != null or (param.payment != null and param.payment[0] == 'failed')}"
+                     style="background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; padding: 12px 20px; border-radius: 10px; margin-bottom: 22px; font-weight: 600; text-align: left;">
+                    <i class="fa fa-exclamation-circle" style="color: #dc2626; font-size: 16px;"></i>
+                    <span th:text="${vnpayError != null ? vnpayError : 'Giao dịch VNPAY chưa hoàn tất hoặc đã bị hủy. Đơn hàng được lưu ở trạng thái chờ thanh toán.'}">Giao dịch không thành công.</span>
+                </div>
+
+                <!-- Customer info grid -->
+                <div class="info-grid">
+                    <div>
+                        <div style="color: #64748b; font-size: 12.5px; text-transform: uppercase; font-weight: 700;">Người nhận</div>
+                        <div style="font-weight: 700; color: #0f172a; margin-top: 4px;" th:text="${order.customerName}">Tên</div>
+                        <div style="color: #475569; margin-top: 2px;" th:text="${order.customerPhone}">0912345678</div>
+                        <div style="color: #475569; margin-top: 2px;" th:text="${order.customerEmail}">email@example.com</div>
+                    </div>
+                    <div>
+                        <div style="color: #64748b; font-size: 12.5px; text-transform: uppercase; font-weight: 700;">Giao tới địa chỉ</div>
+                        <div style="color: #0f172a; font-weight: 600; margin-top: 4px;" th:text="${order.customerAddress}">Địa chỉ</div>
+                        <div style="color: #64748b; margin-top: 6px; font-size: 13px;">
+                            Phương thức: <strong style="color: #0f172a;" th:text="${order.paymentMethod == T(com.banlinhkien.enums.PaymentMethod).cod ? 'COD (Tiền mặt khi nhận)' : 'VNPAY'}">COD</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order items table -->
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Sản Phẩm</th>
+                            <th style="width: 80px; text-align: center;">SL</th>
+                            <th style="width: 140px; text-align: right;">Đơn Giá</th>
+                            <th style="width: 150px; text-align: right;">Thành Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${items}">
+                            <td style="font-weight: 600; color: #0f172a;" th:text="${item.productName}">Tên sản phẩm</td>
+                            <td style="text-align: center;" th:text="${item.quantity}">1</td>
+                            <td style="text-align: right;" th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</td>
+                            <td style="text-align: right; font-weight: 700;" th:text="${#numbers.formatDecimal(item.subtotal, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr th:if="${order.discountAmount != null and order.discountAmount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                            <td colspan="3" style="text-align: right; color: #16a34a; font-weight: 600;">Giảm giá voucher:</td>
+                            <td style="text-align: right; color: #16a34a; font-weight: 700;" th:text="'-' + ${#numbers.formatDecimal(order.discountAmount, 0, 'POINT', 0, 'POINT')} + '₫'">-0₫</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right; color: #475569;">Phí giao hàng:</td>
+                            <td style="text-align: right; font-weight: 600;" th:text="${#numbers.formatDecimal(order.shippingFee, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</td>
+                        </tr>
+                        <tr style="font-size: 16px;">
+                            <td colspan="3" style="text-align: right; font-weight: 800; color: #0f172a;">Tổng thanh toán:</td>
+                            <td style="text-align: right; font-weight: 800; color: #ef4444; font-size: 18px;"
+                                th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div style="display: flex; justify-content: center; gap: 16px; margin-top: 32px;">
+                    <a th:href="@{/}" class="btn-checkout" style="width: auto; padding: 12px 28px; background: #f1f5f9; color: #334155;">
+                        <i class="fa fa-home"></i> Về Trang Chủ
+                    </a>
+                    <a th:href="@{/san-pham}" class="btn-checkout" style="width: auto; padding: 12px 28px;">
+                        <i class="fa fa-shopping-cart"></i> Tiếp Tục Mua Hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

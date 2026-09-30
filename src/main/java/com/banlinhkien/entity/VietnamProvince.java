@@ -1,0 +1,30 @@
+package com.banlinhkien.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "vietnam_provinces")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class VietnamProvince {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "province_id", nullable = false, unique = true)
+    private Long provinceId;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false, length = 120)
+    private String slug;
+
+    @Column(nullable = false, length = 30)
+    private String type;
+}

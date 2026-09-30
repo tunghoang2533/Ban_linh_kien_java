@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - Ban Linh Kien' : 'Admin Dashboard - Ban Linh Kien'}">Admin Dashboard - Ban Linh Kien</title>
+
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #f1f5f9;
+            --sidebar-text: #64748b;
+            --sidebar-hover: #f8fafc;
+            --sidebar-active-bg: #ede9fe;
+            --sidebar-active-text: #6366f1;
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #f1f5f9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .admin-sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid #e2e8f0;
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .admin-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .admin-brand-wrapper {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--sidebar-border);
+            text-decoration: none;
+        }
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+        }
+        .brand-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        .brand-text p {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .admin-menu {
+            list-style: none;
+            padding: 14px 12px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-category-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            padding: 14px 12px 6px;
+            font-weight: 700;
+        }
+
+        .admin-menu a, .admin-menu button.menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 12px;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13.5px;
+            transition: all 0.15s ease;
+            background: none;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+        }
+        .admin-menu a:hover, .admin-menu button.menu-btn:hover {
+            background-color: var(--sidebar-hover);
+            color: #0f172a;
+        }
+        .admin-menu a.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+            font-weight: 600;
+        }
+        .admin-menu a i, .admin-menu button.menu-btn i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+            color: #64748b;
+        }
+        .admin-menu a.active i {
+            color: var(--sidebar-active-text);
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background-color: #ef4444;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 999px;
+            line-height: 1.4;
+        }
+        .nav-badge.badge-orange { background-color: #f97316; }
+        .nav-badge.badge-blue { background-color: #3b82f6; }
+
+        /* Excel Export Pills in Sidebar */
+        .excel-export-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 4px 10px 10px;
+        }
+        .excel-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.1s ease;
+        }
+        .excel-pill:hover {
+            transform: translateY(-1px);
+        }
+        .excel-pill.blue { background: #e0f2fe; color: #0369a1; }
+        .excel-pill.green { background: #dcfce7; color: #15803d; }
+        .excel-pill.teal { background: #ccfbf1; color: #0f766e; }
+        .excel-pill.yellow { background: #fef3c7; color: #b45309; }
+        .excel-pill.mint { background: #d1fae5; color: #047857; }
+
+        .sidebar-footer {
+            padding: 14px 16px;
+            border-top: 1px solid var(--sidebar-border);
+            font-size: 11.5px;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        /* Main Shell */
+        .admin-shell {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* Top Header */
+        .admin-topbar {
+            height: 64px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .admin-topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar-pill {
+            background: #ede9fe;
+            color: #4f46e5;
+            padding: 5px 14px 5px 6px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #ddd6fe;
+        }
+        .user-avatar-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Main Content Body */
+        .admin-content {
+            padding: 28px 32px 40px;
+            flex: 1;
+        }
+
+        /* Alerts */
+        .alert-box {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Cards */
+        .admin-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .admin-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-card-body {
+            padding: 24px;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table.admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13.5px;
+        }
+        table.admin-table th {
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        table.admin-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        table.admin-table tr:hover td {
+            background-color: #fafbfc;
+        }
+
+        /* Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-pending { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+        .badge-processing { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .badge-shipped { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
+        .badge-completed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .btn-primary { background: var(--primary); color: #ffffff; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-secondary { background: #ffffff; color: #334155; border-color: #cbd5e1; }
+        .btn-secondary:hover { background: #f8fafc; }
+        .btn-danger { background: #ef4444; color: #ffffff; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+        /* Forms */
+        .form-group { margin-bottom: 18px; }
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-control {
+            width: 100%;
+            padding: 9px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13.5px;
+            color: #0f172a;
+            background-color: #ffffff;
+            transition: border-color 0.15s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Mobile Hamburger */
+        .sidebar-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-right: auto;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 99;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-toggle-btn { display: inline-flex; }
+            .admin-sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
+            .admin-sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; }
+            .admin-shell { margin-left: 0; }
+            .admin-topbar { padding: 0 16px; }
+            .admin-content { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay backdrop (mobile only) -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <a th:href="@{/admin}" class="admin-brand-wrapper">
+            <div class="brand-icon">
+                <i class="fa fa-th-large"></i>
+            </div>
+            <div class="brand-text">
+                <h1>Admin Panel</h1>
+                <p>Ban Linh Kien</p>
+            </div>
+        </a>
+
+        <ul class="admin-menu">
+            <!-- 1. MENU CHÍNH -->
+            <li class="menu-category-label">Menu chính</li>
+            <li>
+                <a th:href="@{/admin}" th:classappend="${activeNav == 'dashboard' ? 'active' : ''}">
+                    <i class="fa fa-tachometer" style="color: #6366f1;"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/products}" th:classappend="${activeNav == 'products' ? 'active' : ''}">
+                    <i class="fa fa-cube"></i>
+                    <span>Sản phẩm</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/orders}" th:classappend="${activeNav == 'orders' ? 'active' : ''}">
+                    <i class="fa fa-shopping-bag"></i>
+                    <span>Đơn hàng</span>
+                    <span class="nav-badge" th:text="${kpis != null ? kpis.pendingOrders : '21'}">21</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/users}" th:classappend="${activeNav == 'users' ? 'active' : ''}">
+                    <i class="fa fa-users"></i>
+                    <span>Người dùng</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/loyalty}" th:classappend="${activeNav == 'loyalty' ? 'active' : ''}">
+                    <i class="fa fa-star" style="color: #f59e0b;"></i>
+                    <span>Tích điểm KH</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/vouchers}" th:classappend="${activeNav == 'vouchers' ? 'active' : ''}">
+                    <i class="fa fa-ticket"></i>
+                    <span>Voucher</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/discounts}" th:classappend="${activeNav == 'discounts' ? 'active' : ''}">
+                    <i class="fa fa-percent"></i>
+                    <span>Giảm giá</span>
+                    <span class="nav-badge" th:text="${kpis != null ? kpis.discountCount : '24'}">24</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/warehouse}" th:classappend="${activeNav == 'warehouse' ? 'active' : ''}">
+                    <i class="fa fa-archive"></i>
+                    <span>Kho hàng</span>
+                    <span class="nav-badge" th:text="${kpis != null ? kpis.lowStockCount : '4'}">4</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/categories}" th:classappend="${activeNav == 'categories' ? 'active' : ''}">
+                    <i class="fa fa-tags"></i>
+                    <span>Danh mục &amp; Nhãn hàng</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/banners}" th:classappend="${activeNav == 'banners' ? 'active' : ''}">
+                    <i class="fa fa-picture-o"></i>
+                    <span>Banner Slideshow</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/shipping}" th:classappend="${activeNav == 'shipping' ? 'active' : ''}">
+                    <i class="fa fa-truck"></i>
+                    <span>Phí vận chuyển</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/tracking}" th:classappend="${activeNav == 'tracking' ? 'active' : ''}">
+                    <i class="fa fa-location-arrow" style="color: #06b6d4;"></i>
+                    <span>Theo dõi vận đơn</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/suppliers}" th:classappend="${activeNav == 'suppliers' ? 'active' : ''}">
+                    <i class="fa fa-address-book-o"></i>
+                    <span>Nhà cung cấp</span>
+                </a>
+            </li>
+
+            <!-- 2. TIẾP THỊ & BÁN HÀNG -->
+            <li class="menu-category-label">Tiếp thị &amp; Bán hàng</li>
+            <li>
+                <a th:href="@{/admin/flash-sales}" th:classappend="${activeNav == 'flash-sales' ? 'active' : ''}">
+                    <i class="fa fa-bolt" style="color: #f59e0b;"></i>
+                    <span>Flash Sale</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/abandoned-carts}" th:classappend="${activeNav == 'abandoned-carts' ? 'active' : ''}">
+                    <i class="fa fa-shopping-cart" style="color: #f97316;"></i>
+                    <span>Giỏ hàng bỏ quên</span>
+                    <span class="nav-badge badge-orange" th:text="${kpis != null ? kpis.abandonedCartCount : '4'}">4</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/combos}" th:classappend="${activeNav == 'combos' ? 'active' : ''}">
+                    <i class="fa fa-cubes" style="color: #f59e0b;"></i>
+                    <span>Combo sản phẩm</span>
+                </a>
+            </li>
+
+            <!-- 3. TƯƠNG TÁC -->
+            <li class="menu-category-label">Tương tác</li>
+            <li>
+                <a th:href="@{/admin/notifications}" th:classappend="${activeNav == 'notifications' ? 'active' : ''}">
+                    <i class="fa fa-bell-o" style="color: #f59e0b;"></i>
+                    <span>Thông báo</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/chat}" th:classappend="${activeNav == 'chat' ? 'active' : ''}">
+                    <i class="fa fa-comments-o"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/comments}" th:classappend="${activeNav == 'comments' ? 'active' : ''}">
+                    <i class="fa fa-star-o"></i>
+                    <span>Bình luận</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/back-in-stock}" th:classappend="${activeNav == 'back-in-stock' ? 'active' : ''}">
+                    <i class="fa fa-bell-o" style="color: #3b82f6;"></i>
+                    <span>Báo có hàng</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/returns}" th:classappend="${activeNav == 'returns' ? 'active' : ''}">
+                    <i class="fa fa-undo"></i>
+                    <span>Đổi trả / Bảo hành</span>
+                </a>
+            </li>
+
+            <!-- 4. CÔNG CỤ -->
+            <li class="menu-category-label">Công cụ</li>
+            <li>
+                <div style="font-size: 11.5px; font-weight: 700; color: #475569; padding: 4px 12px; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa fa-file-excel-o" style="color: #10b981;"></i>
+                    <span>XUẤT EXCEL</span>
+                </div>
+                <div class="excel-export-grid">
+                    <a th:href="@{/admin/export/orders}" class="excel-pill blue"><i class="fa fa-download"></i> Đơn hàng</a>
+                    <a th:href="@{/admin/export/products}" class="excel-pill green"><i class="fa fa-download"></i> Sản phẩm</a>
+                    <a th:href="@{/admin/export/users}" class="excel-pill teal"><i class="fa fa-download"></i> Khách hàng</a>
+                    <a th:href="@{/admin/export/revenue}" class="excel-pill yellow"><i class="fa fa-download"></i> Báo cáo DT</a>
+                    <a th:href="@{/admin/export/profit}" class="excel-pill mint"><i class="fa fa-download"></i> Báo cáo LN</a>
+                </div>
+            </li>
+            <li>
+                <a th:href="@{/admin/roles}" th:classappend="${activeNav == 'roles' ? 'active' : ''}">
+                    <i class="fa fa-user-circle-o"></i>
+                    <span>Phân quyền Admin</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/settings}" th:classappend="${activeNav == 'settings' ? 'active' : ''}">
+                    <i class="fa fa-cog"></i>
+                    <span>Cài đặt shop</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/email-queue}" th:classappend="${activeNav == 'email-queue' ? 'active' : ''}">
+                    <i class="fa fa-envelope-o"></i>
+                    <span>Email Queue</span>
+                    <span class="nav-badge badge-orange" th:text="${kpis != null ? kpis.emailQueueCount : '2'}">2</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/change-password}" th:classappend="${activeNav == 'change-password' ? 'active' : ''}">
+                    <i class="fa fa-key"></i>
+                    <span>Đổi mật khẩu</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/}" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                    <span>Xem trang web</span>
+                </a>
+            </li>
+            <li>
+                <form th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit" class="menu-btn" style="color: #ef4444;">
+                        <i class="fa fa-sign-out" style="color: #ef4444;"></i>
+                        <span>Đăng xuất</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            &copy; 2026 Ban Linh Kien
+        </div>
+    </aside>
+
+    <!-- Shell container -->
+    <div class="admin-shell">
+        <!-- Topbar -->
+        <header class="admin-topbar">
+            <!-- Hamburger: mobile only -->
+            <button id="sidebar-toggle" class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Menu">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <div class="admin-topbar-user">
+                <div class="user-avatar-pill">
+                    <div class="user-avatar-circle">A</div>
+                    <span sec:authentication="name">admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="admin-content">
+            <!-- Global Flash Alerts -->
+            <div class="alert-box alert-success" th:if="${successMessage != null}">
+                <i class="fa fa-check-circle"></i>
+                <span th:text="${successMessage}">Thao tác thành công!</span>
+            </div>
+            <div class="alert-box alert-error" th:if="${errorMessage != null}">
+                <i class="fa fa-exclamation-triangle"></i>
+                <span th:text="${errorMessage}">Đã xảy ra lỗi!</span>
+            </div>
+
+            <!-- Injected Child Content -->
+            <div layout:fragment="content">
+                <!-- Page body goes here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isOpen = sidebar.classList.toggle('open');
+            overlay.classList.toggle('open', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.querySelector('.admin-sidebar');
+                if (sidebar.classList.contains('open')) toggleSidebar();
+            }
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const sidebar = document.querySelector('.admin-sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+    <th:block layout:fragment="scripts"></th:block>
+
+</body>
+</html>

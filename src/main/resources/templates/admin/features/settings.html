@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Cài Đặt Cửa Hàng - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Cài Đặt Hệ Thống &amp; Cửa Hàng</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-cog" style="color: #6366f1;"></i>
+                Thông Tin Chung Cửa Hàng
+            </div>
+        </div>
+        <div class="admin-card-body">
+            <form th:action="@{/admin/settings}" method="post">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Tên Cửa Hàng / Website</label>
+                        <input type="text" name="shop_name" class="form-control" th:value="${settings['shop_name'] != null ? settings['shop_name'] : 'PC Store - Ban Linh Kien'}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hotline Hỗ Trợ</label>
+                        <input type="text" name="shop_hotline" class="form-control" th:value="${settings['shop_hotline'] != null ? settings['shop_hotline'] : '0865385391'}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Liên Hệ</label>
+                        <input type="email" name="shop_email" class="form-control" th:value="${settings['shop_email'] != null ? settings['shop_email'] : 'contact@banlinh.vn'}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa Chỉ Showroom / Cửa Hàng</label>
+                        <input type="text" name="shop_address" class="form-control" th:value="${settings['shop_address'] != null ? settings['shop_address'] : '123 Đường Cầu Giấy, Hà Nội'}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Link Facebook Fanpage</label>
+                        <input type="text" name="shop_facebook" class="form-control" th:value="${settings['shop_facebook'] != null ? settings['shop_facebook'] : ''}" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số Zalo Hỗ Trợ</label>
+                        <input type="text" name="shop_zalo" class="form-control" th:value="${settings['shop_zalo'] != null ? settings['shop_zalo'] : ''}" placeholder="0987654321">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chính Sách Bảo Hành</label>
+                        <input type="text" name="policy_warranty" class="form-control" th:value="${settings['policy_warranty'] != null ? settings['policy_warranty'] : '12-36 tháng bảo hành chính hãng'}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chính Sách Đổi Trả</label>
+                        <input type="text" name="policy_return" class="form-control" th:value="${settings['policy_return'] != null ? settings['policy_return'] : '7 ngày đổi trả nếu có lỗi'}">
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px;">
+                        <i class="fa fa-save"></i> Lưu Thiết Lập
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

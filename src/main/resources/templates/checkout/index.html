@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title>Thanh toán đơn hàng - PC Store</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .checkout-container {
+                margin: 40px auto 80px;
+            }
+            .checkout-hero {
+                background: linear-gradient(135deg, #0f172a, #1e293b);
+                color: #ffffff;
+                padding: 24px 32px;
+                border-radius: 16px;
+                margin-bottom: 32px;
+            }
+            .checkout-hero h1 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .checkout-grid {
+                display: grid;
+                grid-template-columns: 1fr 420px;
+                gap: 32px;
+                align-items: start;
+            }
+            @media (max-width: 992px) {
+                .checkout-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            .checkout-card {
+                background: #ffffff;
+                border-radius: 16px;
+                border: 1px solid #e2e8f0;
+                padding: 28px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+                margin-bottom: 24px;
+            }
+            .checkout-card h3 {
+                margin: 0 0 20px;
+                font-size: 17px;
+                font-weight: 700;
+                color: #0f172a;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                border-bottom: 1px solid #f1f5f9;
+                padding-bottom: 12px;
+            }
+            .form-group {
+                margin-bottom: 18px;
+            }
+            .form-group label {
+                display: block;
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #334155;
+                margin-bottom: 6px;
+            }
+            .form-group label .required {
+                color: #ef4444;
+            }
+            .form-control {
+                width: 100%;
+                padding: 11px 14px;
+                border: 1.5px solid #cbd5e1;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s;
+                background: #ffffff;
+            }
+            .form-control:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+            .form-row-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            .form-row-3 {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 14px;
+            }
+            @media (max-width: 768px) {
+                .form-row-2, .form-row-3 {
+                    grid-template-columns: 1fr;
+                }
+            }
+            .payment-option {
+                border: 1.5px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .payment-option:hover {
+                border-color: #93c5fd;
+                background: #f8fafc;
+            }
+            .payment-option input[type="radio"]:checked + .payment-content {
+                color: #2563eb;
+            }
+            .payment-option:has(input[type="radio"]:checked) {
+                border-color: #2563eb;
+                background: #eff6ff;
+            }
+            .order-item-mini {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            .order-item-mini img {
+                width: 52px;
+                height: 52px;
+                border-radius: 8px;
+                object-fit: cover;
+                border: 1px solid #e2e8f0;
+                flex-shrink: 0;
+            }
+            .btn-place-order {
+                width: 100%;
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: #ffffff;
+                padding: 16px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+                box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+                transition: all 0.2s;
+                margin-top: 24px;
+            }
+            .btn-place-order:hover {
+                background: linear-gradient(135deg, #1d4ed8, #1e40af);
+                transform: translateY(-1px);
+            }
+            .alert-error {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                color: #dc2626;
+                padding: 14px 18px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+                font-size: 14px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container checkout-container">
+            <div class="checkout-hero">
+                <h1><i class="fa fa-shield"></i> Thanh Toán An Toàn</h1>
+                <p style="margin: 6px 0 0; color: #94a3b8; font-size: 13.5px;">Kiểm tra kỹ thông tin nhận hàng trước khi tiến hành đặt đơn.</p>
+            </div>
+
+            <!-- Error alert -->
+            <div th:if="${checkoutError}" class="alert-error">
+                <i class="fa fa-exclamation-circle"></i> <strong th:text="${checkoutError}">Có lỗi xảy ra</strong>
+            </div>
+
+            <form th:action="@{/thanh-toan}" th:object="${checkoutRequest}" method="post">
+                <div class="checkout-grid">
+                    <!-- Left: Customer & Address Information -->
+                    <div>
+                        <!-- Information Card -->
+                        <div class="checkout-card">
+                            <h3><i class="fa fa-user-circle" style="color: #2563eb;"></i> Thông Tin Người Nhận</h3>
+
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label>Họ và tên <span class="required">*</span></label>
+                                    <input type="text" th:field="*{customerName}" class="form-control" placeholder="Nguyễn Văn A" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Số điện thoại <span class="required">*</span></label>
+                                    <input type="tel" th:field="*{customerPhone}" class="form-control" placeholder="0912345678" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email nhận thông báo đơn hàng</label>
+                                <input type="email" th:field="*{customerEmail}" class="form-control" placeholder="email@example.com">
+                            </div>
+                        </div>
+
+                        <!-- Shipping Address Card -->
+                        <div class="checkout-card">
+                            <h3><i class="fa fa-map-marker" style="color: #2563eb;"></i> Địa Chỉ Giao Hàng</h3>
+
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label>Tỉnh / Thành Phố <span class="required">*</span></label>
+                                    <select id="province-select" th:field="*{province}" class="form-control" required>
+                                        <option value="">-- Chọn Tỉnh/Thành --</option>
+                                        <option th:each="p : ${provinces}"
+                                                th:value="${p.name}"
+                                                th:data-code="${p.code}"
+                                                th:text="${p.name}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Quận / Huyện</label>
+                                    <select id="district-select" th:field="*{district}" class="form-control">
+                                        <option value="">-- Chọn Quận/Huyện --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Phường / Xã</label>
+                                    <select id="ward-select" th:field="*{ward}" class="form-control">
+                                        <option value="">-- Chọn Phường/Xã --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Địa chỉ cụ thể (Số nhà, tên đường, tòa nhà...) <span class="required">*</span></label>
+                                <input type="text" th:field="*{customerAddress}" class="form-control" placeholder="Số 123 Đường Cầu Giấy, Phường Dịch Vọng" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ghi chú cho đơn vị vận chuyển</label>
+                                <textarea th:field="*{shippingNote}" class="form-control" rows="2" placeholder="Giao giờ hành chính, gọi trước khi giao..."></textarea>
+                            </div>
+
+                            <div class="form-group" sec:authorize="isAuthenticated()" style="margin-top: 10px;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+                                    <input type="checkbox" th:field="*{saveAddress}">
+                                    <span>Lưu địa chỉ này vào sổ địa chỉ cá nhân của tôi</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Card -->
+                        <div class="checkout-card">
+                            <h3><i class="fa fa-credit-card" style="color: #2563eb;"></i> Phương Thức Thanh Toán</h3>
+
+                            <label class="payment-option">
+                                <input type="radio" th:field="*{paymentMethod}" value="cod" checked>
+                                <div class="payment-content">
+                                    <div style="font-weight: 700; font-size: 14.5px;">Thanh toán khi nhận hàng (COD)</div>
+                                    <div style="font-size: 13px; color: #64748b;">Nhận hàng, kiểm tra linh kiện và thanh toán tiền mặt cho shipper.</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <input type="radio" th:field="*{paymentMethod}" value="vnpay">
+                                <div class="payment-content">
+                                    <div style="font-weight: 700; font-size: 14.5px;">Thanh toán VNPAY (QR Code / Thẻ ATM / Visa)</div>
+                                    <div style="font-size: 13px; color: #64748b;">Chuyển hướng an toàn tới cổng thanh toán trực tuyến VNPAY Sandbox.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Right: Order Summary -->
+                    <div>
+                        <div class="checkout-card" style="position: sticky; top: 90px;">
+                            <h3>Đơn Hàng (<span th:text="${cart.totalItems}">0</span> sản phẩm)</h3>
+
+                            <!-- Items list -->
+                            <div style="max-height: 280px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">
+                                <div th:each="item : ${items}" class="order-item-mini">
+                                    <img th:src="${item.image != null and !item.image.empty} ? ${item.image} : '/img/product-placeholder.png'"
+                                         alt="Ảnh">
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                             th:text="${item.name}">Tên sản phẩm</div>
+                                        <div style="font-size: 12px; color: #64748b;">
+                                            <span th:text="${item.quantity}">1</span> x
+                                            <span th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</span>
+                                        </div>
+                                    </div>
+                                    <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;"
+                                         th:text="${#numbers.formatDecimal(item.subtotal, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</div>
+                                </div>
+                            </div>
+
+                            <!-- Cost breakdown -->
+                            <div style="border-top: 1px solid #f1f5f9; padding-top: 14px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #475569;">
+                                    <span>Tạm tính:</span>
+                                    <strong th:text="${#numbers.formatDecimal(subtotal, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</strong>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #475569;">
+                                    <span>Phí giao hàng:</span>
+                                    <span th:if="${shippingFee.compareTo(T(java.math.BigDecimal).ZERO) == 0}" style="color: #16a34a; font-weight: 600;">Miễn phí</span>
+                                    <strong th:unless="${shippingFee.compareTo(T(java.math.BigDecimal).ZERO) == 0}"
+                                            th:text="${#numbers.formatDecimal(shippingFee, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</strong>
+                                </div>
+
+                                <div th:if="${voucherDiscount != null and voucherDiscount.compareTo(T(java.math.BigDecimal).ZERO) > 0}"
+                                     style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #16a34a;">
+                                    <span>Voucher giảm giá (<span th:text="${voucherCode}"></span>):</span>
+                                    <strong th:text="'-' + ${#numbers.formatDecimal(voucherDiscount, 0, 'POINT', 0, 'POINT')} + '₫'">-0₫</strong>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: #0f172a; border-top: 2px dashed #e2e8f0; padding-top: 14px; margin-top: 10px;">
+                                    <span>Tổng cộng:</span>
+                                    <span style="color: #ef4444; font-size: 21px;"
+                                          th:text="${#numbers.formatDecimal(totalAmount, 0, 'POINT', 0, 'POINT')} + '₫'">0₫</span>
+                                </div>
+                            </div>
+
+                            <input type="hidden" th:field="*{voucherCode}">
+
+                            <button type="submit" class="btn-place-order">
+                                <i class="fa fa-lock"></i> Xác Nhận Đặt Hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            const provinceSelect = document.getElementById('province-select');
+            const districtSelect = document.getElementById('district-select');
+            const wardSelect = document.getElementById('ward-select');
+
+            provinceSelect.addEventListener('change', function() {
+                const selectedOpt = this.options[this.selectedIndex];
+                const provCode = selectedOpt.getAttribute('data-code');
+
+                districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+
+                if (!provCode) return;
+
+                fetch('/api/location/districts?province_id=' + provCode)
+                    .then(r => r.json())
+                    .then(districts => {
+                        districts.forEach(d => {
+                            const opt = document.createElement('option');
+                            opt.value = d.name;
+                            opt.textContent = d.name;
+                            opt.setAttribute('data-code', d.code);
+                            districtSelect.appendChild(opt);
+                        });
+                    })
+                    .catch(err => console.error(err));
+            });
+
+            districtSelect.addEventListener('change', function() {
+                const selectedOpt = this.options[this.selectedIndex];
+                const distCode = selectedOpt.getAttribute('data-code');
+
+                wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+
+                if (!distCode) return;
+
+                fetch('/api/location/wards?district_id=' + distCode)
+                    .then(r => r.json())
+                    .then(wards => {
+                        wards.forEach(w => {
+                            const opt = document.createElement('option');
+                            opt.value = w.name;
+                            opt.textContent = w.name;
+                            wardSelect.appendChild(opt);
+                        });
+                    })
+                    .catch(err => console.error(err));
+            });
+        </script>
+    </th:block>
+</body>
+</html>

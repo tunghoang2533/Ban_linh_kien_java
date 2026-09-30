@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Đổi Trả &amp; Bảo Hành - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Đổi Trả &amp; Bảo Hành Linh Kiện</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-undo" style="color: #6366f1;"></i>
+                Yêu Cầu Bảo Hành / Đổi Trả Gần Đây
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Mã Yêu Cầu</th>
+                        <th>Mã Đơn / Khách Hàng</th>
+                        <th>Sản Phẩm &amp; Số Serial</th>
+                        <th>Lý Do Yêu Cầu</th>
+                        <th>Ngày Gửi</th>
+                        <th>Trạng Thái Xử Lý</th>
+                        <th style="text-align: right;">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">#RMA092</td>
+                        <td>
+                            <div style="font-weight: 600; color: #4f46e5;">#944</div>
+                            <div style="font-size: 12px; color: #64748b;">Trần Minh Đức</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: #0f172a;">Nguồn Máy Tính 750W</div>
+                            <div style="font-size: 12px; font-family: monospace; color: #64748b;">SN: SN20260901-750W</div>
+                        </td>
+                        <td>Quạt nguồn kêu to khi tải nặng</td>
+                        <td style="font-size: 12px; color: #64748b;">23/09/2026</td>
+                        <td><span class="status-badge badge-processing">Đang kiểm tra kỹ thuật</span></td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-secondary btn-sm" onclick="alert('Đã cập nhật tình trạng tiếp nhận bảo hành')">
+                                <i class="fa fa-check"></i> Cập nhật
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Giỏ Hàng Bỏ Quên - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Giỏ Hàng Bỏ Quên &amp; Nhắc Mua Hàng</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-shopping-cart" style="color: #f97316;"></i>
+                Danh Sách Giỏ Hàng Chưa Hoàn Tất Thanh Toán (4)
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Khách Hàng</th>
+                        <th>Email / Điện Thoại</th>
+                        <th>Sản Phẩm Trong Giỏ</th>
+                        <th>Tổng Giá Trị</th>
+                        <th>Thời Gian Bỏ Lại</th>
+                        <th>Số Lần Nhắc</th>
+                        <th style="text-align: right;">Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: #0f172a;">Hoàng Quang Tùng</td>
+                        <td>
+                            <div>tung5249m@gmail.com</div>
+                            <div style="font-size: 12px; color: #64748b;">0987654321</div>
+                        </td>
+                        <td>Mainboard ASUS TUF GAMING B760M-PLUS (1)</td>
+                        <td style="font-weight: 700; color: #0f172a;">3.800.000 ₫</td>
+                        <td style="font-size: 12px; color: #64748b;">2 giờ trước</td>
+                        <td><span class="status-badge badge-processing">0 lần</span></td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-secondary btn-sm" onclick="alert('Đã gửi email nhắc nhở kèm mã giảm giá 5%')">
+                                <i class="fa fa-paper-plane" style="color: #6366f1;"></i> Gửi Email nhắc
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #0f172a;">Quản trị viên</td>
+                        <td>
+                            <div>admin@gmail.com</div>
+                        </td>
+                        <td>MSI MAG FORGE 100R (1), Fractal Design Meshify C (1)</td>
+                        <td style="font-weight: 700; color: #0f172a;">3.030.000 ₫</td>
+                        <td style="font-size: 12px; color: #64748b;">Hôm qua</td>
+                        <td><span class="status-badge badge-completed">1 lần</span></td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-secondary btn-sm" onclick="alert('Đã gửi lại email')">
+                                <i class="fa fa-paper-plane" style="color: #6366f1;"></i> Gửi lại
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

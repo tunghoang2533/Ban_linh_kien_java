@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle : 'Bán Linh Kiện - Linh kiện máy tính chính hãng'}">Bán Linh Kiện</title>
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        /* ================================================================
+           PC STORE / BÁN LINH KIỆN — DESIGN SYSTEM & LAYOUT
+           ================================================================ */
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-muted: #f1f5f9;
+            --border: #e2e8f0;
+            --txt-primary: #0f172a;
+            --txt-secondary: #475569;
+            --txt-tertiary: #94a3b8;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Outfit', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--txt-primary);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ── TOP NAV BAR ── */
+        .top-nav {
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0;
+            font-size: 12.5px;
+        }
+        .top-nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 36px;
+        }
+        .top-nav-left {
+            color: #475569;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav-left i { color: #2563eb; font-size: 13px; }
+        .top-nav-left strong { color: #2563eb; }
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+        }
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 0 14px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-left: 1px solid #e2e8f0;
+            transition: color .16s, background .16s;
+        }
+        .top-nav a:first-child { border-left: none; }
+        .top-nav a:hover { color: #2563eb; background: #fff; }
+
+        /* ── MAIN HEADER ── */
+        header.site-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 68px;
+        }
+
+        /* Logo */
+        .logo { flex-shrink: 0; }
+        .logo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: #2563eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            flex-shrink: 0;
+            transition: transform 0.18s ease;
+        }
+        .logo a:hover .logo-icon { transform: scale(1.08); }
+        .logo-text {
+            font-size: 21px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+        .logo-text span { color: #2563eb; }
+
+        /* Main Navigation */
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .main-nav > a,
+        .nav-dropdown-wrapper > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.16s ease;
+        }
+        .main-nav > a:hover,
+        .nav-dropdown-wrapper:hover > span {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        .main-nav > a.active {
+            background: #2563eb;
+            color: #ffffff;
+        }
+        .main-nav > a.active i { color: #ffffff; }
+
+        /* Build PC pill button in nav */
+        .nav-buildpc-btn {
+            background: #0f2027 !important;
+            color: #ffffff !important;
+            border-radius: 20px !important;
+            padding: 7px 14px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            box-shadow: 0 2px 8px rgba(15,32,39,0.3);
+        }
+        .nav-buildpc-btn i { color: #00d2ff; }
+        .nav-buildpc-badge {
+            background: #00d2ff;
+            color: #0f2027;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Nav Dropdown */
+        .nav-dropdown-wrapper { position: relative; }
+        .nav-cat-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 230px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            padding: 8px 0;
+            margin: 6px 0 0 0;
+            list-style: none;
+            display: none;
+            z-index: 1000;
+        }
+        .nav-dropdown-wrapper:hover .nav-cat-dropdown { display: block; }
+        .nav-cat-dropdown li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            color: #334155;
+            font-size: 13.5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .nav-cat-dropdown li a:hover {
+            background: #f8fafc;
+            color: #2563eb;
+            padding-left: 20px;
+        }
+        .nav-cat-dropdown li a i { font-size: 11px; color: #94a3b8; }
+
+        /* Search bar */
+        .search-bar {
+            flex: 1;
+            max-width: 420px;
+        }
+        .search-bar form {
+            display: flex;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .search-bar form:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+            background: #fff;
+        }
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 9px 16px;
+            outline: none;
+            font-size: 13.5px;
+            font-family: inherit;
+            background: transparent;
+            color: #0f172a;
+        }
+        .search-bar input::placeholder { color: #94a3b8; }
+        .search-bar button {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 0 18px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.18s;
+        }
+        .search-bar button:hover { background: #1d4ed8; }
+
+        /* User Menu & Cart */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .cart-btn {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            text-decoration: none;
+            position: relative;
+            font-size: 16px;
+            transition: all 0.18s;
+        }
+        .cart-btn:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        .cart-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        .user-menu-item { position: relative; }
+        .avatar-btn {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            text-decoration: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .avatar-btn:hover { background: #eff6ff; color: #2563eb; }
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 220px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            padding: 8px 0;
+            margin: 6px 0 0 0;
+            list-style: none;
+            display: none;
+            z-index: 1000;
+        }
+        .user-menu-item:hover .dropdown-content { display: block; }
+        .dropdown-content li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            color: #334155;
+            font-size: 13.5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .dropdown-content li a:hover {
+            background: #f8fafc;
+            color: #2563eb;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 6px 0;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 50px;
+            padding: 48px 0 0 0;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 32px;
+            margin-bottom: 36px;
+        }
+        .footer-col h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+        }
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: color 0.15s;
+        }
+        .footer-col ul li a:hover { color: #2563eb; }
+        .footer-brand .brand-name {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .footer-brand p {
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin: 0 0 16px 0;
+            max-width: 320px;
+        }
+        .footer-social { display: flex; gap: 10px; }
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+        .footer-social a:hover { background: #2563eb; color: #fff; }
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+        .footer-contact li i {
+            color: #2563eb;
+            margin-top: 3px;
+        }
+        .footer-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 0;
+        }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .footer-bottom-links { display: flex; gap: 16px; }
+        .footer-bottom-links a { color: #94a3b8; text-decoration: none; }
+        .footer-bottom-links a:hover { color: #2563eb; }
+
+        /* Floating widgets */
+        .floating-chat-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            background: #0f2027;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            z-index: 999;
+            transition: transform 0.2s;
+        }
+        .floating-chat-btn:hover {
+            transform: translateY(-3px);
+            color: #fff;
+        }
+        .floating-chat-btn i { color: #00d2ff; font-size: 16px; }
+
+        #goto-top-page {
+            position: fixed;
+            right: 24px;
+            bottom: 84px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 999;
+            transition: all 0.2s;
+        }
+        #goto-top-page:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .main-nav { display: none; }
+        }
+        @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .top-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Announcement Bar -->
+    <div class="top-nav">
+        <div class="container">
+            <div class="top-nav-left">
+                <i class="fa fa-phone"></i> Hotline: <strong>0865385391</strong>
+            </div>
+            <div class="top-nav-right">
+                <a th:href="@{/products(section='combo')}"><i class="fa fa-gift" style="color:#f59e0b;"></i> Combo</a>
+                <a th:href="@{/products(section='latest')}"><i class="fa fa-newspaper-o"></i> Tin tức</a>
+                <a th:href="@{/contact}"><i class="fa fa-envelope-o"></i> Liên hệ</a>
+                <a th:href="@{/about}"><i class="fa fa-info-circle"></i> Giới thiệu</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-inner">
+                <!-- Logo -->
+                <div class="logo">
+                    <a th:href="@{/}">
+                        <span class="logo-icon"><i class="fa fa-microchip"></i></span>
+                        <span class="logo-text">Bán Linh Kiện</span>
+                    </a>
+                </div>
+
+                <!-- Main Nav -->
+                <nav class="main-nav">
+                    <a th:href="@{/}" class="active">
+                        <i class="fa fa-home"></i> Trang chủ
+                    </a>
+                    <a th:href="@{/contact}">
+                        <i class="fa fa-headphones"></i> Hỗ trợ
+                    </a>
+                    <a th:href="@{/buildpc}" class="nav-buildpc-btn" title="Tự build cấu hình PC theo ý bạn">
+                        <i class="fa fa-microchip"></i>
+                        <span>Build PC</span>
+                        <span class="nav-buildpc-badge">MỚI</span>
+                    </a>
+
+                    <div class="nav-dropdown-wrapper">
+                        <span>
+                            <i class="fa fa-th-large"></i> Danh mục
+                            <i class="fa fa-caret-down" style="font-size:11px;"></i>
+                        </span>
+                        <ul class="nav-cat-dropdown">
+                            <li th:each="cat : ${categories}">
+                                <a th:href="@{/(category_id=${cat.id})}">
+                                    <i class="fa fa-circle-o"></i>
+                                    <span th:text="${cat.name}">CPU</span>
+                                </a>
+                            </li>
+                            <li style="border-top:1px solid #f1f5f9;margin-top:4px;padding-top:4px;">
+                                <a th:href="@{/products}" style="color:#2563eb;font-weight:600;">
+                                    <i class="fa fa-arrow-right"></i> Xem tất cả
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- Search bar -->
+                <div class="search-bar">
+                    <form th:action="@{/products}" method="get">
+                        <input type="text" name="search" placeholder="Tìm kiếm linh kiện...">
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+
+                <!-- User actions -->
+                <div class="user-menu">
+                    <a th:href="@{/cart}" class="cart-btn" title="Giỏ hàng">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="cart-count" th:if="${session.cart != null and session.cart.items.size() > 0}" th:text="${session.cart.items.size()}">1</span>
+                    </a>
+
+                    <div class="user-menu-item">
+                        <a href="javascript:void(0)" class="avatar-btn" title="Tài khoản">
+                            <i class="fa fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-content">
+                            <li sec:authorize="isAuthenticated()">
+                                <a th:href="@{/account}"><i class="fa fa-user"></i> Tài khoản của tôi</a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/admin}"><i class="fa fa-shield"></i> Trang Quản Trị</a>
+                            </li>
+                            <li sec:authorize="isAuthenticated()">
+                                <a th:href="@{/account/orders}"><i class="fa fa-history"></i> Đơn hàng đã mua</a>
+                            </li>
+                            <li sec:authorize="isAuthenticated()" class="dropdown-divider"></li>
+                            <li sec:authorize="isAuthenticated()">
+                                <form th:action="@{/logout}" method="post" id="logoutForm" style="display:none;"></form>
+                                <a href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();" style="color:#ef4444;">
+                                    <i class="fa fa-sign-out"></i> Đăng xuất
+                                </a>
+                            </li>
+                            <li sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/login}"><i class="fa fa-sign-in"></i> Đăng nhập</a>
+                            </li>
+                            <li sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/register}"><i class="fa fa-user-plus"></i> Đăng ký tài khoản</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main layout:fragment="content">
+        <!-- Content will be injected here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1 -->
+                <div class="footer-col footer-brand">
+                    <a th:href="@{/}" class="brand-name">
+                        <span class="logo-icon" style="width:32px;height:32px;font-size:15px;"><i class="fa fa-microchip"></i></span>
+                        Bán Linh Kiện
+                    </a>
+                    <p>Chuyên cung cấp linh kiện máy tính chính hãng. Giao hàng toàn quốc, bảo hành tận nơi.</p>
+                    <div class="footer-social">
+                        <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="#" title="YouTube"><i class="fa fa-youtube"></i></a>
+                        <a href="#" title="Zalo"><i class="fa fa-comment"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div class="footer-col">
+                    <h4>Thông tin</h4>
+                    <ul>
+                        <li><a th:href="@{/about}">Giới thiệu</a></li>
+                        <li><a th:href="@{/products(section='latest')}">Tin tức</a></li>
+                        <li><a th:href="@{/contact}">Liên hệ</a></li>
+                        <li><a th:href="@{/products}">Sitemap</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div class="footer-col">
+                    <h4>Chính sách</h4>
+                    <ul>
+                        <li><a th:href="@{/policy}">Bảo mật</a></li>
+                        <li><a th:href="@{/terms}">Điều khoản</a></li>
+                        <li><a th:href="@{/shipping}">Vận chuyển</a></li>
+                        <li><a th:href="@{/return}">Đổi trả</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fa fa-map-marker"></i>
+                            <span>123 Đường ABC, Hà Nội</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-phone"></i>
+                            <span>Hotline: <strong style="color:#0f172a;">0865385391</strong></span>
+                        </li>
+                        <li>
+                            <i class="fa fa-envelope-o"></i>
+                            <span>contact@banlinh.vn</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-clock-o"></i>
+                            <span>8:00 – 22:00 mỗi ngày</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2026 Bán Linh Kiện &mdash; Đồ án tốt nghiệp CNTT</p>
+                <div class="footer-bottom-links">
+                    <a th:href="@{/terms}">Điều khoản</a>
+                    <a th:href="@{/policy}">Bảo mật</a>
+                    <a th:href="@{/contact}">Hỗ trợ</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating support & Go to top buttons -->
+    <a th:href="@{/contact}" class="floating-chat-btn">
+        <i class="fa fa-commenting"></i>
+        <span>Bạn cần hỗ trợ gì?</span>
+    </a>
+
+    <a href="#" id="goto-top-page" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" title="Lên đầu trang">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <!-- Toast Notification Container -->
+    <div id="toastNotification" style="position:fixed;bottom:24px;right:24px;z-index:9999;background:#0f172a;color:#ffffff;padding:14px 20px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.2);display:none;align-items:center;gap:12px;font-size:14px;font-weight:600;transition:all 0.3s ease;">
+        <i class="fa fa-check-circle" style="color:#10b981;font-size:18px;"></i>
+        <span id="toastMessage">Đã thêm vào giỏ hàng thành công!</span>
+    </div>
+
+    <!-- Global Storefront Scripts -->
+    <script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toastNotification');
+            const msg = document.getElementById('toastMessage');
+            if (!toast || !msg) return;
+
+            msg.textContent = message;
+            if (isError) {
+                toast.style.background = '#ef4444';
+                toast.querySelector('i').className = 'fa fa-exclamation-circle';
+                toast.querySelector('i').style.color = '#ffffff';
+            } else {
+                toast.style.background = '#0f172a';
+                toast.querySelector('i').className = 'fa fa-check-circle';
+                toast.querySelector('i').style.color = '#10b981';
+            }
+
+            toast.style.display = 'flex';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => { toast.style.display = 'none'; }, 300);
+            }, 3000);
+        }
+
+        function addToCart(productId, quantity = 1, isBuyNow = false) {
+            const qty = parseInt(quantity) || 1;
+            const formData = new URLSearchParams();
+            formData.append('product_id', productId);
+            formData.append('quantity', qty);
+
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (isBuyNow) {
+                        window.location.href = '/checkout';
+                        return;
+                    }
+
+                    // Update header cart badge
+                    let cartBadge = document.querySelector('.cart-count');
+                    if (!cartBadge) {
+                        const cartBtn = document.querySelector('.cart-btn');
+                        if (cartBtn) {
+                            cartBadge = document.createElement('span');
+                            cartBadge.className = 'cart-count';
+                            cartBtn.appendChild(cartBadge);
+                        }
+                    }
+                    if (cartBadge && data.cartCount !== undefined) {
+                        cartBadge.textContent = data.cartCount;
+                    }
+
+                    showToast('Đã thêm sản phẩm vào giỏ hàng thành công!');
+                } else {
+                    showToast(data.message || 'Không thể thêm sản phẩm!', true);
+                }
+            })
+            .catch(err => {
+                console.error('Cart error:', err);
+                // Fallback to standard form post
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/cart/add';
+                const pInput = document.createElement('input');
+                pInput.type = 'hidden';
+                pInput.name = 'productId';
+                pInput.value = productId;
+                form.appendChild(pInput);
+                const qInput = document.createElement('input');
+                qInput.type = 'hidden';
+                qInput.name = 'quantity';
+                qInput.value = qty;
+                form.appendChild(qInput);
+                if (isBuyNow) {
+                    const bInput = document.createElement('input');
+                    bInput.type = 'hidden';
+                    bInput.name = 'buyNow';
+                    bInput.value = 'true';
+                    form.appendChild(bInput);
+                }
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+    </script>
+    <th:block layout:fragment="scripts"></th:block>
+
+</body>
+</html>
+

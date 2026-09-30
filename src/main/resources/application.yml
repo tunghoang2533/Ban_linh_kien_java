@@ -1,0 +1,52 @@
+server:
+  port: 8088
+  servlet:
+    session:
+      timeout: 60m
+
+spring:
+  application:
+    name: ban-linh-kien-java
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/db_ban_linh_kien?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8
+    username: root
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 20000
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    prefix: classpath:/templates/
+    suffix: .html
+
+logging:
+  level:
+    root: INFO
+    com.banlinhkien: DEBUG
+    org.springframework.security: INFO
+
+vnpay:
+  tmn-code: ${VNPAY_TMN_CODE:YOUR_TMN_CODE}
+  hash-secret: ${VNPAY_HASH_SECRET:TEST_SECRET_KEY}
+  url: ${VNPAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+  return-url: ${VNPAY_RETURN_URL:http://localhost:8088/vnpay/return}
+

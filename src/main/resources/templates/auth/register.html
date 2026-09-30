@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title>Đăng Ký - Bán Linh Kiện</title>
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 360px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+            padding: 40px 36px;
+            border: 1px solid #e2e8f0;
+        }
+        .auth-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 8px;
+            text-align: center;
+        }
+        .auth-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .auth-field { margin-bottom: 18px; }
+        .auth-field label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+        .auth-field input {
+            width: 100%;
+            height: 46px;
+            padding: 0 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .auth-field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .auth-hint { font-size: 12px; color: #94a3b8; margin-top: 5px; }
+        .btn-submit-auth {
+            width: 100%;
+            height: 48px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        .btn-submit-auth:hover { background: #1d4ed8; }
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+        .auth-footer-link a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="auth-page">
+    <div class="auth-card">
+        <h1>Tạo Tài Khoản Mới</h1>
+        <div class="auth-subtitle">Điền thông tin bên dưới để đăng ký tài khoản</div>
+
+        <div th:if="${errorMessage != null}" class="alert-box alert-error" style="margin-bottom: 20px;" th:text="${errorMessage}"></div>
+        <div th:if="${successMessage != null}" class="alert-box alert-success" style="margin-bottom: 20px;" th:text="${successMessage}"></div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="auth-field">
+                <label for="username">Tên đăng nhập <span style="color:#ef4444">*</span></label>
+                <input type="text" id="username" name="username" required autofocus
+                       placeholder="ví dụ: nguyenvana" minlength="4" maxlength="50">
+                <div class="auth-hint">4–50 ký tự, không dấu, không khoảng trắng</div>
+            </div>
+            <div class="auth-field">
+                <label for="email">Email <span style="color:#ef4444">*</span></label>
+                <input type="email" id="email" name="email" required
+                       placeholder="ví dụ: email@gmail.com" maxlength="100">
+            </div>
+            <div class="auth-field">
+                <label for="fullName">Họ và tên</label>
+                <input type="text" id="fullName" name="fullName"
+                       placeholder="ví dụ: Nguyễn Văn A" maxlength="100">
+            </div>
+            <div class="auth-field">
+                <label for="password">Mật khẩu <span style="color:#ef4444">*</span></label>
+                <input type="password" id="password" name="password" required
+                       placeholder="Ít nhất 8 ký tự" minlength="8">
+            </div>
+            <div class="auth-field">
+                <label for="confirmPassword">Xác nhận mật khẩu <span style="color:#ef4444">*</span></label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                       placeholder="Nhập lại mật khẩu" minlength="8">
+            </div>
+            <button type="submit" class="btn-submit-auth">
+                <i class="fa fa-user-plus"></i> Đăng Ký
+            </button>
+        </form>
+
+        <div class="auth-footer-link">
+            Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Thông Báo Hệ Thống - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý &amp; Gửi Thông Báo Broadcast</h2>
+        <button class="btn btn-primary btn-sm"><i class="fa fa-bullhorn"></i> Gửi thông báo toàn hệ thống</button>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-bell-o" style="color: #f59e0b;"></i>
+                Lịch Sử Thông Báo Đã Phát
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Tiêu Đề</th>
+                        <th>Nội Dung Tóm Tắt</th>
+                        <th>Đối Tượng</th>
+                        <th>Loại Thông Báo</th>
+                        <th>Thời Gian Gửi</th>
+                        <th>Lượt Đã Đọc</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700; color: #0f172a;">Bảo trì hệ thống thanh toán VNPAY</td>
+                        <td>Hệ thống sẽ tạm dừng kênh VNPAY từ 00:00 - 02:00 để nâng cấp bảo mật</td>
+                        <td>Tất cả người dùng</td>
+                        <td><span class="status-badge badge-pending">Hệ thống</span></td>
+                        <td style="font-size: 12px; color: #64748b;">20/09/2026 14:00</td>
+                        <td style="font-weight: 600;">11/11</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700; color: #0f172a;">Chương trình Flash Sale Cuối Tuần</td>
+                        <td>Giảm đến 30% linh kiện PC cao cấp cho toàn bộ khách hàng thành viên</td>
+                        <td>Khách hàng đã đăng ký</td>
+                        <td><span class="status-badge badge-completed">Khuyến mãi</span></td>
+                        <td style="font-size: 12px; color: #64748b;">18/09/2026 09:30</td>
+                        <td style="font-weight: 600;">9/11</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

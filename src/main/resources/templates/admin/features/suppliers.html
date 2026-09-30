@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Nhà Cung Cấp - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Nhà Cung Cấp &amp; Đối Tác</h2>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-address-book-o" style="color: #6366f1;"></i>
+                Danh Sách Nhà Phân Phối Linh Kiện
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Mã NCC</th>
+                        <th>Tên Nhà Cung Cấp</th>
+                        <th>Liên Hệ / Hotline</th>
+                        <th>Email</th>
+                        <th>Địa Chỉ Kho</th>
+                        <th>Sản Phẩm Cung Ứng</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">#NCC01</td>
+                        <td style="font-weight: 600; color: #0f172a;">Công ty Phân Phối ASUS Việt Nam</td>
+                        <td>028 3848 9999</td>
+                        <td>partner@asus.vn</td>
+                        <td>Tân Bình, TP.HCM</td>
+                        <td>Mainboard, VGA, Màn hình</td>
+                        <td><span class="status-badge badge-completed">Hợp tác tốt</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">#NCC02</td>
+                        <td style="font-weight: 600; color: #0f172a;">Nhà Phân Phối MSI Thủy Linh</td>
+                        <td>024 3537 5888</td>
+                        <td>sales@thuylinh.vn</td>
+                        <td>Đống Đa, Hà Nội</td>
+                        <td>VGA, Case, Nguồn, Tản nhiệt</td>
+                        <td><span class="status-badge badge-completed">Hợp tác tốt</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">#NCC03</td>
+                        <td style="font-weight: 600; color: #0f172a;">Viễn Sơn Distribution (AMD/Gigabyte)</td>
+                        <td>028 3832 6085</td>
+                        <td>contact@vienson.vn</td>
+                        <td>Quận 10, TP.HCM</td>
+                        <td>CPU AMD, Mainboard, RAM</td>
+                        <td><span class="status-badge badge-completed">Hợp tác tốt</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title th:text="${product.name + ' - Bán Linh Kiện'}">Chi Tiết Sản Phẩm</title>
+    <style>
+        .product-detail-wrap {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 36px;
+            margin: 32px 0 36px;
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 48px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .detail-gallery {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .detail-main-img {
+            width: 100%;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .detail-main-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .detail-info h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px;
+            line-height: 1.3;
+        }
+        .detail-meta-strip {
+            display: flex;
+            gap: 20px;
+            color: #64748b;
+            font-size: 13.5px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-meta-strip strong { color: #0f172a; }
+        .detail-price-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+        }
+        .detail-final-price {
+            font-size: 30px;
+            font-weight: 800;
+            color: #dc2626;
+        }
+        .detail-original-price {
+            font-size: 16px;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        .detail-discount-tag {
+            background: #ef4444;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+        }
+
+        /* Quantity Control */
+        .quantity-control-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .quantity-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+        }
+        .quantity-spinner {
+            display: inline-flex;
+            align-items: center;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        .quantity-btn {
+            background: #f8fafc;
+            border: none;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .quantity-btn:hover { background: #e2e8f0; }
+        .quantity-input {
+            width: 50px;
+            height: 38px;
+            border: none;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .detail-cta-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-build-pc {
+            flex: 1;
+            min-width: 190px;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, opacity 0.15s;
+            box-shadow: 0 4px 14px rgba(15, 32, 39, 0.25);
+        }
+        .btn-build-pc:hover { transform: translateY(-2px); opacity: 0.95; }
+        .btn-add-cart {
+            flex: 1;
+            min-width: 190px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, opacity 0.15s;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+        .btn-add-cart:hover { transform: translateY(-2px); opacity: 0.95; }
+        .btn-buy-now-cta {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            color: #ffffff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, opacity 0.15s;
+            box-shadow: 0 4px 14px rgba(255, 65, 108, 0.35);
+        }
+        .btn-buy-now-cta:hover { transform: translateY(-2px); opacity: 0.95; }
+
+        /* Description & Specs Container */
+        .detail-full-section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 36px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .detail-full-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+        }
+        .detail-full-header .icon-badge {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .detail-full-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .detail-full-header span {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .detail-full-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 36px;
+        }
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+        .specs-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .specs-table tr:nth-child(even) { background: #f8fafc; }
+        .specs-table tr:nth-child(odd) { background: #ffffff; }
+        .specs-table td:first-child {
+            color: #64748b;
+            font-weight: 600;
+            width: 40%;
+            border-right: 1px solid #f1f5f9;
+        }
+        .specs-table td:last-child {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* Reviews & Comments Section */
+        .reviews-section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 48px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .reviews-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .reviews-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .reviews-header-title .icon-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .reviews-rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            padding: 8px 18px;
+            border-radius: 10px;
+        }
+        .reviews-rating-score {
+            font-size: 24px;
+            font-weight: 800;
+            color: #d97706;
+        }
+        .reviews-stars {
+            color: #f59e0b;
+            font-size: 15px;
+        }
+
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            gap: 16px;
+        }
+        .review-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #ede9fe;
+            color: #4f46e5;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .review-content-wrap {
+            flex: 1;
+        }
+        .review-author-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .review-author-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+        }
+        .review-verified-tag {
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .review-date {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-left: auto;
+        }
+        .review-text {
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 6px;
+        }
+
+        /* Review Form */
+        .review-form-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+        .review-form-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .product-detail-wrap { grid-template-columns: 1fr; }
+            .detail-full-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+
+    <!-- Flash Alerts -->
+    <div style="margin-top: 20px;" th:if="${successMessage != null}">
+        <div style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px 18px;border-radius:8px;font-weight:600;">
+            <i class="fa fa-check-circle"></i> <span th:text="${successMessage}">Thao tác thành công!</span>
+        </div>
+    </div>
+    <div style="margin-top: 20px;" th:if="${errorMessage != null}">
+        <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px 18px;border-radius:8px;font-weight:600;">
+            <i class="fa fa-exclamation-triangle"></i> <span th:text="${errorMessage}">Đã xảy ra lỗi!</span>
+        </div>
+    </div>
+
+    <!-- Product Detail Header Box -->
+    <div class="product-detail-wrap">
+        <!-- Gallery -->
+        <div class="detail-gallery">
+            <div class="detail-main-img">
+                <img th:if="${product.image != null and !product.image.isEmpty()}" 
+                     th:src="${product.image.startsWith('http') ? product.image : (product.image.startsWith('/') ? product.image : '/img/products/' + product.image)}" 
+                     th:alt="${product.name}"
+                     onerror="this.src='/img/logo.jpg'">
+                <img th:if="${product.image == null or product.image.isEmpty()}" src="/img/logo.jpg" alt="Product Image">
+            </div>
+        </div>
+
+        <!-- Info & Actions -->
+        <div class="detail-info">
+            <h1 th:text="${product.name}">Tên Sản Phẩm Linh Kiện</h1>
+            
+            <div class="detail-meta-strip">
+                <div>Danh mục: <strong th:text="${product.category != null ? product.category.name : 'Linh Kiện'}">CPU</strong></div>
+                <div>Thương hiệu: <strong th:text="${product.brand != null ? product.brand.name : 'Chính Hãng'}">Intel</strong></div>
+                <div>Tình trạng: <strong style="color: #16a34a;" th:text="${product.quantity > 0 ? 'Còn hàng (' + product.quantity + ')' : 'Hết hàng'}">Còn hàng</strong></div>
+                <div>Đánh giá: 
+                    <strong style="color: #f59e0b;">
+                        <i class="fa fa-star"></i> <span th:text="${avgRating}">5.0</span>
+                    </strong> 
+                    <span style="color: #64748b;" th:text="'(' + ${commentCount} + ' nhận xét)'">(0 nhận xét)</span>
+                </div>
+            </div>
+
+            <div class="detail-price-box">
+                <div class="detail-final-price" th:text="${#numbers.formatDecimal(product.getFinalPrice(), 0, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</div>
+                <div class="detail-original-price" th:if="${product.hasDiscount()}" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</div>
+                <div class="detail-discount-tag" th:if="${product.hasDiscount()}" th:text="'-' + ${#numbers.formatDecimal(product.discountPercent, 0, 0)} + '%'">-10%</div>
+            </div>
+
+            <!-- Promotion Highlight Box -->
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13.5px;color:#1e40af;">
+                <strong>🎁 Ưu đãi đặc quyền:</strong> Miễn phí ship toàn quốc từ 500.000₫ • Tặng keo tản nhiệt cao cấp • Hỗ trợ bảo hành 1 đổi 1 trong 7 ngày.
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="quantity-control-wrap">
+                <span class="quantity-label">Số lượng:</span>
+                <div class="quantity-spinner">
+                    <button type="button" class="quantity-btn" onclick="adjustDetailQty(-1)">&minus;</button>
+                    <input type="number" id="detailQtyInput" class="quantity-input" value="1" min="1" max="99" onchange="validateDetailQty(this)">
+                    <button type="button" class="quantity-btn" onclick="adjustDetailQty(1)">&#43;</button>
+                </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="detail-cta-row">
+                <a th:href="@{/build-pc(action='add', product_id=${product.id})}" class="btn-build-pc">
+                    <i class="fa fa-wrench"></i> Build PC với linh kiện này
+                </a>
+                <button type="button" class="btn-add-cart" onclick="addCurrentProductToCart(false)">
+                    <i class="fa fa-cart-plus"></i> Thêm vào giỏ hàng
+                </button>
+                <button type="button" class="btn-buy-now-cta" onclick="addCurrentProductToCart(true)">
+                    <i class="fa fa-bolt"></i> Mua ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comprehensive Product Description & Technical Specs -->
+    <div class="detail-full-section">
+        <div class="detail-full-header">
+            <span class="icon-badge"><i class="fa fa-book"></i></span>
+            <div>
+                <h2>Mô Tả Chi Tiết Sản Phẩm</h2>
+                <span th:text="'Thông tin chi tiết, đặc điểm nổi bật và thông số kỹ thuật của ' + ${product.name}">Thông tin chi tiết</span>
+            </div>
+        </div>
+
+        <div class="detail-full-grid">
+            
+            <!-- Left Column: Detailed Description -->
+            <div style="line-height: 1.8; color: #334155; font-size: 15px;">
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-star" style="color: #f59e0b;"></i> Đặc điểm nổi bật
+                    </h3>
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 16px 20px; border-radius: 0 12px 12px 0; font-size: 15px; color: #1e293b; font-weight: 500;"
+                         th:text="${product.description != null ? product.description : 'Linh kiện máy tính chính hãng, hiệu năng vượt trội, độ bền cao và tương thích tối đa với các hệ thống PC hiện đại.'}">
+                        Mô tả chi tiết sản phẩm.
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-shield" style="color: #10b981;"></i> Cam kết &amp; Chất lượng sản phẩm
+                    </h3>
+                    <ul style="padding-left: 20px; margin: 0; color: #475569; display: flex; flex-direction: column; gap: 10px;">
+                        <li><strong>Hàng chính hãng 100%:</strong> Đầy đủ hóa đơn VAT, tem niêm phong và bảo hành theo chuẩn nhà sản xuất.</li>
+                        <li><strong>Hiệu năng tối ưu:</strong> Được kiểm tra kỹ lưỡng trước khi đóng gói và giao đến tay khách hàng.</li>
+                        <li><strong>Dễ dàng nâng cấp:</strong> Chuẩn kết nối hiện đại, tương thích hoàn hảo với các dòng Mainboard, Nguồn và Vỏ case phổ biến.</li>
+                        <li><strong>Hỗ trợ kỹ thuật:</strong> Đội ngũ kỹ thuật viên sẵn sàng tư vấn lắp đặt, cài đặt BIOS và tối ưu cấu hình miễn phí trọn đời.</li>
+                    </ul>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1.5px dashed #93c5fd; border-radius: 14px; padding: 20px; margin-top: 20px;">
+                    <h4 style="margin: 0 0 10px; font-size: 15px; font-weight: 800; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-gift" style="color: #e10c00;"></i> Quyền lợi khi mua tại Bán Linh Kiện
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #1e3a8a;">
+                        <div>✓ Giảm thêm 5% khi mua kèm Combo PC</div>
+                        <div>✓ Miễn phí vệ sinh &amp; tra keo tản nhiệt</div>
+                        <div>✓ Gói bảo hành vàng 1 đổi 1</div>
+                        <div>✓ Hỗ trợ trả góp 0% lãi suất qua thẻ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Specs & Policies -->
+            <div>
+                <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 14px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-sliders" style="color: #2563eb;"></i> Thông số kỹ thuật
+                </h3>
+
+                <table class="specs-table">
+                    <tbody>
+                        <tr>
+                            <td>Mã sản phẩm</td>
+                            <td th:text="'SP#' + ${product.id}">SP#1</td>
+                        </tr>
+                        <tr>
+                            <td>Tên sản phẩm</td>
+                            <td th:text="${product.name}">Tên sản phẩm</td>
+                        </tr>
+                        <tr>
+                            <td>Danh mục</td>
+                            <td th:text="${product.category != null ? product.category.name : 'Linh kiện'}">CPU</td>
+                        </tr>
+                        <tr>
+                            <td>Thương hiệu</td>
+                            <td th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Intel / AMD</td>
+                        </tr>
+                        <tr>
+                            <td>Tình trạng kho</td>
+                            <td th:text="${product.quantity > 0 ? 'Còn hàng (' + product.quantity + ' cái)' : 'Hết hàng'}">Còn hàng</td>
+                        </tr>
+                        <tr>
+                            <td>Bảo hành</td>
+                            <td>36 Tháng chính hãng</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Policies Box -->
+                <div style="background: #0f172a; color: #fff; border-radius: 14px; padding: 20px;">
+                    <h4 style="margin: 0 0 14px; font-size: 14.5px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-certificate"></i> Chính Sách Dịch Vụ
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: #cbd5e1;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i class="fa fa-truck" style="color: #38bdf8; font-size: 16px; width: 20px;"></i>
+                            <span>Giao hàng hỏa tốc trong 2H nội thành</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i class="fa fa-refresh" style="color: #38bdf8; font-size: 16px; width: 20px;"></i>
+                            <span>Đổi mới 1-đổi-1 trong 7 ngày nếu có lỗi NSX</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i class="fa fa-wrench" style="color: #38bdf8; font-size: 16px; width: 20px;"></i>
+                            <span>Miễn phí lắp đặt hoàn thiện và test máy</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i class="fa fa-phone" style="color: #38bdf8; font-size: 16px; width: 20px;"></i>
+                            <span>Hotline hỗ trợ: <strong style="color: #fff;">0865 385 391</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Customer Reviews & Comments Section -->
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <div class="reviews-header-title">
+                <span class="icon-badge"><i class="fa fa-comments"></i></span>
+                <div>
+                    <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #0f172a;">Đánh Giá &amp; Bình Luận Từ Khách Hàng</h2>
+                    <span style="font-size: 13px; color: #64748b;" th:text="'Nhận xét thực tế của những khách hàng đã mua ' + ${product.name}">Nhận xét thực tế</span>
+                </div>
+            </div>
+            <div class="reviews-rating-summary">
+                <div class="reviews-rating-score" th:text="${avgRating}">5.0</div>
+                <div>
+                    <div class="reviews-stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 2px;" th:text="${commentCount} + ' nhận xét đã mua hàng'">0 nhận xét</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List of existing comments -->
+        <div class="reviews-list" th:if="${comments != null and !comments.isEmpty()}">
+            <div class="review-item" th:each="c : ${comments}">
+                <div class="review-avatar" th:text="${c.name != null and !c.name.isEmpty() ? #strings.substring(c.name, 0, 1) : 'K'}">K</div>
+                <div class="review-content-wrap">
+                    <div class="review-author-line">
+                        <span class="review-author-name" th:text="${c.name}">Nguyễn Văn An</span>
+                        <span class="review-verified-tag"><i class="fa fa-check-circle"></i> Đã mua hàng tại Bán Linh Kiện</span>
+                        <div class="reviews-stars" style="margin-left: 6px;">
+                            <span th:each="i : ${#numbers.sequence(1, c.rating != null ? c.rating : 5)}">★</span>
+                        </div>
+                        <span class="review-date" th:text="${c.createdAt != null ? #temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm') : ''}">24/09/2026</span>
+                    </div>
+                    <div class="review-text" th:text="${c.comment}">
+                        Hàng giao rất nhanh, đóng gói xốp cẩn thận nhiều lớp. Lắp vào case chạy êm ru, nhiệt độ mát mẻ. Rất hài lòng!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${comments == null or comments.isEmpty()}" style="text-align: center; padding: 32px 16px; color: #64748b;">
+            <i class="fa fa-commenting-o" style="font-size: 32px; color: #cbd5e1; margin-bottom: 10px;"></i>
+            <p style="font-size: 14.5px; font-weight: 600;">Chưa có bình luận nào cho sản phẩm này.</p>
+            <p style="font-size: 13px; color: #94a3b8;">Hãy là người đầu tiên để lại đánh giá để nhận 50 điểm thưởng!</p>
+        </div>
+
+        <!-- Submit Review Form -->
+        <div class="review-form-box">
+            <div class="review-form-title">
+                <i class="fa fa-pencil" style="color: #2563eb;"></i>
+                <span>Gửi Đánh Giá Của Bạn</span>
+            </div>
+
+            <form th:action="@{'/products/' + ${product.id} + '/comment'}" method="post">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Họ tên người đánh giá <span style="color: #ef4444;">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="Ví dụ: Hoàng Quang Tùng" 
+                               th:value="${#authentication != null and #authentication.name != 'anonymousUser' ? #authentication.name : ''}" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mức độ hài lòng</label>
+                        <select name="rating" class="form-control">
+                            <option value="5">⭐⭐⭐⭐⭐ (5 sao - Cực kỳ hài lòng)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 sao - Tốt)</option>
+                            <option value="3">⭐⭐⭐ (3 sao - Bình thường)</option>
+                            <option value="2">⭐⭐ (2 sao - Chưa ưng ý)</option>
+                            <option value="1">⭐ (1 sao - Rất tệ)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Nội dung nhận xét <span style="color: #ef4444;">*</span></label>
+                    <textarea name="comment" rows="3" class="form-control" placeholder="Chia sẻ cảm nhận về chất lượng sản phẩm, tốc độ giao hàng, thái độ phục vụ..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-buy-now-cta" style="padding: 10px 24px; font-size: 14px; border: none; cursor: pointer;">
+                    <i class="fa fa-paper-plane"></i> Gửi Đánh Giá Ngay
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const currentProductId = /*[[${product.id}]]*/ 1;
+
+        function adjustDetailQty(delta) {
+            const input = document.getElementById('detailQtyInput');
+            if (!input) return;
+            let val = parseInt(input.value) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            if (val > 99) val = 99;
+            input.value = val;
+        }
+
+        function validateDetailQty(input) {
+            let val = parseInt(input.value) || 1;
+            if (val < 1) val = 1;
+            if (val > 99) val = 99;
+            input.value = val;
+        }
+
+        function addCurrentProductToCart(isBuyNow = false) {
+            const input = document.getElementById('detailQtyInput');
+            const qty = input ? parseInt(input.value) || 1 : 1;
+            addToCart(currentProductId, qty, isBuyNow);
+        }
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

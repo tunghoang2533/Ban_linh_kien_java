@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Quản Lý Kho Hàng - Admin Panel</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #0f172a;">Quản Lý Kho &amp; Tồn Kho Sản Phẩm</h2>
+        <a th:href="@{/admin/products}" class="btn btn-primary btn-sm"><i class="fa fa-cubes"></i> Quản lý sản phẩm</a>
+    </div>
+
+    <!-- Low Stock Alert Box -->
+    <div class="admin-card" style="border-left: 4px solid #ef4444;">
+        <div class="admin-card-header">
+            <div class="admin-card-title" style="color: #b91c1c;">
+                <i class="fa fa-exclamation-triangle" style="color: #ef4444;"></i>
+                Cảnh Báo Tồn Kho Sắp Hết (&le; 5 Sản Phẩm)
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Mã SP</th>
+                        <th>Tên Linh Kiện</th>
+                        <th>Danh Mục</th>
+                        <th>Vị Trí Kệ</th>
+                        <th style="text-align: center;">Tồn Kho</th>
+                        <th style="text-align: right;">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${lowStockProducts}">
+                        <td th:text="'#' + ${p.id}" style="font-weight: 700;">#1</td>
+                        <td style="font-weight: 600; color: #0f172a;" th:text="${p.name}">CPU AMD Ryzen</td>
+                        <td th:text="${p.category != null ? p.category.name : '-'}">CPU</td>
+                        <td th:text="${p.binLocation != null ? p.binLocation : 'KHO-A1'}">KHO-A1</td>
+                        <td style="text-align: center;">
+                            <span style="background: #fef2f2; color: #dc2626; font-weight: 800; padding: 4px 10px; border-radius: 6px;"
+                                  th:text="${p.quantity}">2</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <a th:href="@{'/admin/products/' + ${p.id} + '/edit'}" class="btn btn-secondary btn-sm"><i class="fa fa-plus-circle"></i> Nhập hàng</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${lowStockProducts == null or lowStockProducts.isEmpty()}">
+                        <td colspan="6" style="text-align: center; color: #10b981; padding: 20px;">
+                            <i class="fa fa-check-circle"></i> Tất cả các sản phẩm đều đang có số lượng an toàn!
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory overview table -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <i class="fa fa-building-o" style="color: #6366f1;"></i>
+                Toàn Bộ Tồn Kho Sản Phẩm
+            </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Mã SP</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá Bán</th>
+                        <th>Giá Vốn</th>
+                        <th style="text-align: center;">Tồn Kho</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${allProducts}">
+                        <td th:text="'#' + ${p.id}" style="font-weight: 700;">#1</td>
+                        <td style="font-weight: 600; color: #0f172a;" th:text="${p.name}">Mainboard ASUS TUF</td>
+                        <td style="font-weight: 700;" th:text="${#numbers.formatDecimal(p.finalPrice, 0, 'POINT', 0, 'COMMA')} + ' ₫'">3.800.000 ₫</td>
+                        <td style="color: #64748b;" th:text="${p.costPrice != null ? #numbers.formatDecimal(p.costPrice, 0, 'POINT', 0, 'COMMA') + ' ₫' : '-'}">-</td>
+                        <td style="text-align: center; font-weight: 700;" th:text="${p.quantity}">15</td>
+                        <td>
+                            <span class="status-badge" th:classappend="${p.quantity > 5 ? 'badge-completed' : (p.quantity > 0 ? 'badge-pending' : 'badge-cancelled')}"
+                                  th:text="${p.quantity > 5 ? 'Còn hàng' : (p.quantity > 0 ? 'Sắp hết' : 'Hết hàng')}">Còn hàng</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

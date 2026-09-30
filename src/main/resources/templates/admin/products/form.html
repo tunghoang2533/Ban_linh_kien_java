@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title th:text="${isEdit ? 'Chỉnh Sửa Sản Phẩm' : 'Thêm Mới Sản Phẩm'} + ' - Quản Trị'">Sản Phẩm</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <a th:href="@{/admin/products}" style="color: #64748b; text-decoration: none; font-size: 13.5px;">
+                <i class="fa fa-arrow-left"></i> Quay lại danh sách sản phẩm
+            </a>
+            <h2 style="font-size: 20px; font-weight: 800; margin-top: 6px;"
+                th:text="${isEdit ? 'Chỉnh Sửa Sản Phẩm #' + productForm.id : 'Thêm Mới Sản Phẩm'}">
+                Thêm Mới Sản Phẩm
+            </h2>
+        </div>
+    </div>
+
+    <form th:action="@{/admin/products/save}" th:object="${productForm}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{image}">
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+            <!-- Left Column: Main Information & Specs -->
+            <div>
+                <!-- Basic Info Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">
+                            <i class="fa fa-info-circle" style="color: #2563eb;"></i> Thông Tin Chung
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="form-group">
+                            <label class="form-label">Tên sản phẩm <span style="color: #ef4444;">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" placeholder="Nhập tên sản phẩm..." required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Danh mục</label>
+                                <select class="form-control" th:field="*{categoryId}">
+                                    <option value="">-- Chọn danh mục --</option>
+                                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}">Category</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Thương hiệu</label>
+                                <select class="form-control" th:field="*{brandId}">
+                                    <option value="">-- Chọn thương hiệu --</option>
+                                    <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}">Brand</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Giá niêm yết (VNĐ) <span style="color: #ef4444;">*</span></label>
+                                <input type="number" step="1000" class="form-control" th:field="*{price}" placeholder="Ví dụ: 5000000" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Giá vốn (VNĐ)</label>
+                                <input type="number" step="1000" class="form-control" th:field="*{costPrice}" placeholder="Ví dụ: 4200000">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Giảm giá (%)</label>
+                                <input type="number" min="0" max="100" class="form-control" th:field="*{discountPercent}" placeholder="0 - 100">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mô tả sản phẩm</label>
+                            <textarea class="form-control" th:field="*{description}" rows="5" placeholder="Chi tiết mô tả đặc tính, thông tin bảo hành..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Specifications Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">
+                            <i class="fa fa-cogs" style="color: #9333ea;"></i> Thông Số Kỹ Thuật (Specs)
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addSpecRow()">
+                            <i class="fa fa-plus"></i> Thêm thông số
+                        </button>
+                    </div>
+                    <div class="admin-card-body">
+                        <div id="specs-container">
+                            <div class="form-row spec-row" style="margin-bottom: 10px; align-items: center;"
+                                 th:each="specName, iterStat : ${productForm.specNames}">
+                                <div style="flex: 1;">
+                                    <input type="text" name="specNames" class="form-control" placeholder="Tên thông số (e.g. Socket, Chipset, Dung lượng)"
+                                           th:value="${specName}">
+                                </div>
+                                <div style="flex: 2;">
+                                    <input type="text" name="specValues" class="form-control" placeholder="Giá trị (e.g. LGA1700, B760, 16GB)"
+                                           th:value="${productForm.specValues != null and iterStat.index < productForm.specValues.size() ? productForm.specValues[iterStat.index] : ''}">
+                                </div>
+                                <div style="width: 40px; text-align: center;">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeSpecRow(this)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12.5px; color: #64748b; margin-top: 8px;">
+                            * Các thông số như Socket, Chipset, Bus RAM, Chuẩn kích thước... sẽ được dùng trong thuật toán Tương thích Build PC.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Inventory, Media & Status -->
+            <div>
+                <!-- Inventory & Visibility -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">
+                            <i class="fa fa-archive" style="color: #ea580c;"></i> Tồn Kho &amp; Trạng Thái
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="form-group">
+                            <label class="form-label">Số lượng trong kho <span style="color: #ef4444;">*</span></label>
+                            <input type="number" min="0" class="form-control" th:field="*{quantity}" required>
+                        </div>
+
+                        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 14px;">
+                            <input type="checkbox" id="isActive" th:field="*{isActive}" style="width: 18px; height: 18px;">
+                            <label for="isActive" style="font-weight: 600; cursor: pointer;">Đang kinh doanh (Hiển thị storefront)</label>
+                        </div>
+
+                        <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="isFeatured" th:field="*{isFeatured}" style="width: 18px; height: 18px;">
+                            <label for="isFeatured" style="font-weight: 600; cursor: pointer;">Sản phẩm nổi bật (Trang chủ)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Image Upload -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title">
+                            <i class="fa fa-picture-o" style="color: #10b981;"></i> Hình Ảnh Sản Phẩm
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <div th:if="*{image != null and !image.isEmpty()}" style="margin-bottom: 14px; text-align: center;">
+                            <img th:src="@{'/img/products/' + *{image}}" alt="Ảnh hiện tại"
+                                 style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px;">
+                            <div style="font-size: 12px; color: #64748b; margin-top: 4px;" th:text="*{image}">image.png</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tải ảnh mới lên máy chủ:</label>
+                            <input type="file" name="imageFile" class="form-control" accept="image/*">
+                            <span style="font-size: 11.5px; color: #64748b;">Hỗ trợ: JPG, PNG, WEBP. Lưu trữ bền vững ngoài classpath.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button Card -->
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; padding: 12px;">
+                        <i class="fa fa-check"></i> Lưu Sản Phẩm
+                    </button>
+                    <a th:href="@{/admin/products}" class="btn btn-secondary" style="padding: 12px;">
+                        Hủy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        function addSpecRow() {
+            const container = document.getElementById('specs-container');
+            const row = document.createElement('div');
+            row.className = 'form-row spec-row';
+            row.style.marginBottom = '10px';
+            row.style.alignItems = 'center';
+            row.innerHTML = `
+                <div style="flex: 1;">
+                    <input type="text" name="specNames" class="form-control" placeholder="Tên thông số (e.g. Socket, TDP, Bus)">
+                </div>
+                <div style="flex: 2;">
+                    <input type="text" name="specValues" class="form-control" placeholder="Giá trị (e.g. LGA1700, 65W, 3200MHz)">
+                </div>
+                <div style="width: 40px; text-align: center;">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeSpecRow(this)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeSpecRow(button) {
+            const row = button.closest('.spec-row');
+            if (row) {
+                row.remove();
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

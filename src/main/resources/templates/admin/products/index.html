@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Quản Lý Sản Phẩm - Quản Trị</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Action header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800;">Danh Sách Sản Phẩm</h2>
+        <a th:href="@{/admin/products/create}" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Thêm Sản Phẩm Mới
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <form th:action="@{/admin/products}" method="get" class="filter-bar">
+        <div style="flex: 1; min-width: 200px;">
+            <input type="text" name="q" class="form-control" placeholder="Tìm theo tên sản phẩm, mã..."
+                   th:value="${q}">
+        </div>
+
+        <div style="min-width: 160px;">
+            <select name="categoryId" class="form-control">
+                <option value="">-- Tất cả danh mục --</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                        th:selected="${categoryId != null and categoryId == c.id}">Category</option>
+            </select>
+        </div>
+
+        <div style="min-width: 160px;">
+            <select name="brandId" class="form-control">
+                <option value="">-- Tất cả thương hiệu --</option>
+                <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}"
+                        th:selected="${brandId != null and brandId == b.id}">Brand</option>
+            </select>
+        </div>
+
+        <div style="min-width: 150px;">
+            <select name="stock" class="form-control">
+                <option value="">-- Mức tồn kho --</option>
+                <option value="low" th:selected="${stock == 'low'}">Sắp hết (&le; 5)</option>
+                <option value="out" th:selected="${stock == 'out'}">Hết hàng (= 0)</option>
+            </select>
+        </div>
+
+        <div style="min-width: 140px;">
+            <select name="isActive" class="form-control">
+                <option value="">-- Trạng thái bán --</option>
+                <option value="true" th:selected="${isActive != null and isActive}">Đang kinh doanh</option>
+                <option value="false" th:selected="${isActive != null and !isActive}">Ngừng kinh doanh</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fa fa-filter"></i> Lọc
+            </button>
+            <a th:href="@{/admin/products}" class="btn btn-secondary btn-sm">
+                <i class="fa fa-refresh"></i> Xóa lọc
+            </a>
+        </div>
+    </form>
+
+    <!-- Products Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">Mã</th>
+                        <th style="width: 70px;">Ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Thương hiệu</th>
+                        <th>Giá bán lẻ</th>
+                        <th style="text-align: center;">Tồn kho</th>
+                        <th style="text-align: center;">Trạng thái</th>
+                        <th style="text-align: right; width: 140px;">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${products.content}">
+                        <td style="font-weight: 700; color: #64748b;" th:text="'#' + ${p.id}">#1</td>
+                        <td>
+                            <img th:if="${p.image != null and !p.image.isEmpty()}"
+                                 th:src="@{'/img/products/' + ${p.image}}"
+                                 alt="Ảnh" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <div th:unless="${p.image != null and !p.image.isEmpty()}"
+                                 style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                <i class="fa fa-image"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: #0f172a; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                 th:text="${p.name}">Intel Core i5-13600K</div>
+                            <div style="font-size: 12px; color: #64748b;" th:if="${p.isFeatured}">
+                                <span style="background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 4px; font-weight: 600;">Nổi bật</span>
+                            </div>
+                        </td>
+                        <td th:text="${p.category != null ? p.category.name : '-'}">CPU</td>
+                        <td th:text="${p.brand != null ? p.brand.name : '-'}">Intel</td>
+                        <td>
+                            <div style="font-weight: 700; color: #2563eb;" th:text="${#numbers.formatDecimal(p.finalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">7.500.000 đ</div>
+                            <div style="font-size: 11px; color: #94a3b8; text-decoration: line-through;" th:if="${p.discountPercent != null and p.discountPercent > 0}"
+                                 th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">8.000.000 đ</div>
+                        </td>
+                        <td style="text-align: center;">
+                            <span th:if="${p.quantity > 5}" style="background: #ecfdf5; color: #047857; font-weight: 700; padding: 3px 8px; border-radius: 6px;" th:text="${p.quantity}">15</span>
+                            <span th:if="${p.quantity > 0 and p.quantity <= 5}" style="background: #fffbeb; color: #b45309; font-weight: 700; padding: 3px 8px; border-radius: 6px;" th:text="${p.quantity}">3</span>
+                            <span th:if="${p.quantity == 0}" style="background: #fef2f2; color: #b91c1c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">Hết hàng</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span th:if="${p.isActive}" style="color: #10b981; font-weight: 600; font-size: 13px;">
+                                <i class="fa fa-check-circle"></i> Đang bán
+                            </span>
+                            <span th:unless="${p.isActive}" style="color: #94a3b8; font-weight: 600; font-size: 13px;">
+                                <i class="fa fa-ban"></i> Ngừng bán
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div style="display: inline-flex; gap: 6px;">
+                                <a th:href="@{'/admin/products/' + ${p.id} + '/edit'}" class="btn btn-secondary btn-sm" title="Sửa sản phẩm">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <form th:if="${p.isActive}" th:action="@{'/admin/products/' + ${p.id} + '/delete'}" method="post"
+                                      onsubmit="return confirm('Bạn có chắc muốn ngưng kinh doanh sản phẩm này? (Thông số kỹ thuật sẽ được giữ nguyên)');">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Ngưng kinh doanh">
+                                        <i class="fa fa-eye-slash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${products.content == null or products.content.isEmpty()}">
+                        <td colspan="9" style="text-align: center; color: #94a3b8; padding: 32px;">
+                            Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="admin-pagination" th:if="${products.totalPages > 1}">
+        <a th:if="${products.hasPrevious()}"
+           th:href="@{/admin/products(page=${products.number - 1}, q=${q}, categoryId=${categoryId}, brandId=${brandId}, stock=${stock}, isActive=${isActive})}">
+            &laquo; Trước
+        </a>
+        <th:block th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}">
+            <span th:if="${i == products.number}" class="current" th:text="${i + 1}">1</span>
+            <a th:unless="${i == products.number}"
+               th:href="@{/admin/products(page=${i}, q=${q}, categoryId=${categoryId}, brandId=${brandId}, stock=${stock}, isActive=${isActive})}"
+               th:text="${i + 1}">2</a>
+        </th:block>
+        <a th:if="${products.hasNext()}"
+           th:href="@{/admin/products(page=${products.number + 1}, q=${q}, categoryId=${categoryId}, brandId=${brandId}, stock=${stock}, isActive=${isActive})}">
+            Sau &raquo;
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
