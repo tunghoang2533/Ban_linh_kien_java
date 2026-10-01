@@ -421,10 +421,7 @@
                     <span class="item-badge badge-sale" th:if="${p.hasDiscount()}" th:text="'-' + ${#numbers.formatDecimal(p.discountPercent, 1, 0)} + '%'">-10%</span>
                     <a th:href="@{'/products/' + ${p.id}}" class="product-card-link">
                         <div class="img-wrap">
-                            <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                            <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                <span><i class="fa fa-picture-o"></i> Chưa có ảnh</span>
-                            </div>
+                            <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                         </div>
                         <div class="product-category" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">MAINBOARD</div>
                         <h3 th:text="${p.name}">Tên sản phẩm</h3>
@@ -468,10 +465,7 @@
                         <div class="sec-card" th:each="p : ${recommendedProducts}">
                             <a class="sec-card-link" th:href="@{'/products/' + ${p.id}}">
                                 <div class="img-wrap">
-                                    <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                                    <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                        <span>Chưa có ảnh</span>
-                                    </div>
+                                    <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                 </div>
                                 <div class="sec-cat" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">MAINBOARD</div>
                                 <div class="sec-name" th:text="${p.name}">Mainboard ASUS TUF GAMING</div>
@@ -510,10 +504,7 @@
                             <span class="item-badge badge-sale" th:if="${p.hasDiscount()}" th:text="'-' + ${#numbers.formatDecimal(p.discountPercent, 1, 0)} + '%'">-15%</span>
                             <a class="sec-card-link" th:href="@{'/products/' + ${p.id}}">
                                 <div class="img-wrap">
-                                    <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                                    <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                        <span>Chưa có ảnh</span>
-                                    </div>
+                                    <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                 </div>
                                 <div class="sec-cat" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">CPU</div>
                                 <div class="sec-name" th:text="${p.name}">Core i5-12400F</div>
@@ -552,10 +543,7 @@
                         <div class="sec-card" th:each="p : ${latestProducts}">
                             <a class="sec-card-link" th:href="@{'/products/' + ${p.id}}">
                                 <div class="img-wrap">
-                                    <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                                    <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                        <span>Chưa có ảnh</span>
-                                    </div>
+                                    <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                 </div>
                                 <div class="sec-cat" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">MAINBOARD</div>
                                 <div class="sec-name" th:text="${p.name}">Mainboard MSI MPG X670E</div>
@@ -594,10 +582,7 @@
                             <span class="item-badge badge-sold" th:text="'🔥 ' + ${18 - iter.index * 2} + ' đã bán'">🔥 18 đã bán</span>
                             <a class="sec-card-link" th:href="@{'/products/' + ${p.id}}">
                                 <div class="img-wrap">
-                                    <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                                    <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                        <span>Chưa có ảnh</span>
-                                    </div>
+                                    <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                 </div>
                                 <div class="sec-cat" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">MAINBOARD</div>
                                 <div class="sec-name" th:text="${p.name}">Mainboard ASUS TUF GAMING</div>
@@ -635,10 +620,7 @@
                         <div class="sec-card" th:each="p : ${featuredProducts}">
                             <a class="sec-card-link" th:href="@{'/products/' + ${p.id}}">
                                 <div class="img-wrap">
-                                    <img th:if="${p.image != null and !p.image.isEmpty()}" th:src="@{'/img/products/' + ${p.image}}" th:alt="${p.name}">
-                                    <div th:unless="${p.image != null and !p.image.isEmpty()}" class="no-img-svg">
-                                        <span>Chưa có ảnh</span>
-                                    </div>
+                                    <img th:src="${p.image != null and !p.image.isEmpty() ? '/img/products/' + p.image : '/img/products/intel-i5-12400f.png'}" th:alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                 </div>
                                 <div class="sec-cat" th:text="${p.category != null ? p.category.name : 'Linh kiện'}">VỎ CASE</div>
                                 <div class="sec-name" th:text="${p.name}">Thermaltake View 71 TG ARGB</div>

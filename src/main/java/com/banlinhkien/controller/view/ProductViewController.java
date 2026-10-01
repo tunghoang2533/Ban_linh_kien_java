@@ -33,8 +33,16 @@ public class ProductViewController {
             @RequestParam(name = "size", defaultValue = "12") int size,
             @RequestParam(name = "search", required = false) String search,
             @RequestParam(name = "category_id", required = false) Long categoryId,
+            @RequestParam(name = "section", required = false) String section,
             Model model
     ) {
+        if ("combo".equalsIgnoreCase(section)) {
+            return "redirect:/combo";
+        }
+        if ("latest".equalsIgnoreCase(section)) {
+            return "redirect:/tin-tuc";
+        }
+
         Page<Product> productPage = productService.getProducts(page, size, search, categoryId);
         List<Category> categories = categoryService.getAllCategories();
 
@@ -57,7 +65,7 @@ public class ProductViewController {
             @RequestParam(name = "size", defaultValue = "12") int size,
             Model model
     ) {
-        return index(page, size, null, categoryId, model);
+        return index(page, size, null, categoryId, null, model);
     }
 
     @GetMapping({"/san-pham/{id}", "/products/{id}"})

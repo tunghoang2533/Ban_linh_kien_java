@@ -139,12 +139,10 @@
                 <div class="product-card" th:each="product : ${products}" style="background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 16px; display: flex; flex-direction: column;">
                     <div class="product-badge" th:if="${product.hasDiscount()}" th:text="'-' + ${#numbers.formatDecimal(product.discountPercent, 0, 0)} + '%'">-10%</div>
                     <a th:href="@{'/san-pham/' + ${product.id}}" style="width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; margin-bottom: 12px;">
-                        <img th:if="${product.image != null and !product.image.isEmpty()}" 
-                             th:src="${product.image.startsWith('http') ? product.image : (product.image.startsWith('/') ? product.image : '/img/products/' + product.image)}" 
+                        <img th:src="${product.image != null and !product.image.isEmpty() ? (product.image.startsWith('http') ? product.image : (product.image.startsWith('/') ? product.image : '/img/products/' + product.image)) : '/img/products/intel-i5-12400f.png'}" 
                              th:alt="${product.name}"
                              style="max-width: 90%; max-height: 90%; object-fit: contain;"
-                             onerror="this.src='/img/logo.jpg'">
-                        <img th:if="${product.image == null or product.image.isEmpty()}" src="/img/logo.jpg" alt="Product Image" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+                             onerror="this.src='/img/products/intel-i5-12400f.png'">
                     </a>
                     <div style="font-size: 11.5px; color: #64748b; font-weight: 600; text-transform: uppercase;" th:text="${product.category != null ? product.category.name : 'Linh kiện'}">Linh kiện</div>
                     <a th:href="@{'/san-pham/' + ${product.id}}" style="font-size: 14px; font-weight: 700; color: #0f172a; text-decoration: none; height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 8px;" th:text="${product.name}">Tên sản phẩm</a>

@@ -1,0 +1,95 @@
+import re
+
+PRODUCT_IMAGE_MAP = {
+    1: 'intel-i5-12400f.png',
+    2: 'asus-tuf-b760m-plus.png',
+    3: 'ryzen-5-5600x.png',
+    4: 'ryzen-7-5700x.png',
+    5: 'intel-i7-12700f.png',
+    6: 'kingston-fury-beast-ddr4-8gb.png',
+    7: 'kingston-fury-beast-ddr4-16gb.png',
+    8: 'corsair-vengeance-ddr5-32gb.png',
+    9: 'msi-mag-b550-tomahawk.png',
+    10: 'gigabyte-b760m-ds3h.png',
+    11: 'msi-rtx-4060-gaming-x.png',
+    12: 'gigabyte-rx-7600-gaming-oc.png',
+    13: 'wd-blue-sn580-500gb.png',
+    14: 'wd-blue-sn580-1tb.png',
+    15: 'seagate-barracuda-1tb-hdd.png',
+    16: 'seasonic-focus-gx-650w.png',
+    17: 'corsair-rm750e-750w.png',
+    18: 'coolermaster-masterbox-q300l.png',
+    19: 'msi-mag-forge-100r.png',
+    20: 'intel-i3-12100f.png',
+    21: 'intel-i5-12400f.png',
+    22: 'intel-i5-13400f.png',
+    23: 'intel-i7-12700f.png',
+    24: 'intel-i7-13700f.png',
+    25: 'intel-i9-13900f.png',
+    26: 'ryzen-5-7600x.png',
+    27: 'ryzen-7-7700x.png',
+    28: 'ryzen-9-7900x.png',
+    29: 'ryzen-5-5500.png',
+    30: 'ryzen-7-5700x.png',
+    31: 'asus-prime-b660m-a.png',
+    32: 'msi-pro-b660m-a.png',
+    33: 'gigabyte-b660m-ds3h.png',
+    34: 'asus-rog-strix-b660-f.png',
+    35: 'msi-mag-z690-tomahawk.png',
+    36: 'asus-prime-b650-plus.png',
+    37: 'gigabyte-b650-aorus-elite-ax.png',
+    38: 'msi-mpg-x670e-carbon-wifi.png',
+    39: 'gigabyte-b550m-ds3h.png',
+    40: 'asus-tuf-b550-plus.png',
+    41: 'kingston-fury-beast-ddr4-8gb.png',
+    42: 'kingston-fury-beast-ddr4-32gb.png',
+    43: 'corsair-vengeance-lpx-16gb.png',
+    44: 'corsair-vengeance-rgb-pro-16gb.png',
+    45: 'gskill-trident-z-rgb-32gb.png',
+    46: 'kingston-fury-beast-ddr5-32gb.png',
+    47: 'corsair-dominator-platinum-rgb-32gb.png',
+    48: 'asus-dual-rtx-3060-12gb.png',
+    49: 'msi-rtx-3060-ti-gaming-x.png',
+    50: 'asus-tuf-rtx-3070-oc.png',
+    51: 'gigabyte-rtx-4060-gaming-oc.png',
+    52: 'msi-rtx-4070-ventus-3x.png',
+    53: 'sapphire-pulse-rx-6600.png',
+    54: 'sapphire-nitro-rx-6700-xt.png',
+    55: 'gigabyte-rx-7600-gaming-oc.png',
+    56: 'samsung-870-evo-500gb.png',
+    57: 'samsung-870-evo-1tb.png',
+    58: 'samsung-980-pro-1tb.png',
+    59: 'wd-blue-sn570-1tb.png',
+    60: 'wd-black-sn850x-2tb.png',
+    61: 'crucial-p3-1tb.png',
+    62: 'seagate-barracuda-1tb-hdd.png',
+    63: 'seagate-barracuda-2tb-hdd.png',
+    64: 'coolermaster-mwe-550w-white.png',
+    65: 'coolermaster-mwe-gold-650w.png',
+    66: 'seasonic-focus-gx-750w.png',
+    67: 'seasonic-prime-tx-850w.png',
+    68: 'bequiet-straight-power-11-750w.png',
+    69: 'deepcool-pq650m-650w.png',
+    70: 'coolermaster-masterbox-q300l.png',
+    71: 'coolermaster-masterbox-520-mesh.png',
+    72: 'nzxt-h510-flow.png',
+    73: 'nzxt-h7-flow-rgb.png',
+    74: 'lian-li-pc-o11-dynamic-evo.png',
+    75: 'fractal-design-meshify-c.png',
+    76: 'thermaltake-view-71-tg.png'
+}
+
+with open('db_ban_linh_kien.sql', 'r', encoding='utf-8', errors='ignore') as f:
+    sql_content = f.read()
+
+# Replace tuples accurately by finding \(id, ... \)
+for pid, img in PRODUCT_IMAGE_MAP.items():
+    # Regex to find tuple starting with (pid,
+    # Example: (42,2,5,'Kingston FURY Beast 32GB DDR4 3200MHz (2x16GB)',1590000.00,0.00,0,NULL,NULL,50,'',
+    pattern = r'(\(\s*' + str(pid) + r'\s*,\s*\d+\s*,\s*\d+\s*,\s*\'(?:[^\'\\]|\\.)*\'\s*,\s*[\d\.]+\s*,\s*[\d\.]+\s*,\s*\d+\s*,\s*[^,]+\s*,\s*[^,]+\s*,\s*\d+\s*,\s*)\'(?:[^\'\\]|\\.)*\''
+    sql_content = re.sub(pattern, rf"\1'{img}'", sql_content)
+
+with open('db_ban_linh_kien.sql', 'w', encoding='utf-8') as f:
+    f.write(sql_content)
+
+print("Updated all 76 product images in db_ban_linh_kien.sql!")

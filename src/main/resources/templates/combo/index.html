@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/storefront}">
+<head>
+    <title>Gói Combo Linh Kiện Tiết Kiệm - Bán Linh Kiện</title>
+    <style>
+        .combo-hero-banner {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 40px 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(49, 46, 129, 0.25);
+        }
+        .combo-hero-banner::after {
+            content: '🎁';
+            position: absolute;
+            right: 20px;
+            bottom: -20px;
+            font-size: 160px;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+        .combo-hero-title {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+        }
+        .combo-hero-subtitle {
+            font-size: 15px;
+            color: #c7d2fe;
+            max-width: 650px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Filter Tabs */
+        .combo-filter-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+        .combo-filter-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #475569;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .combo-filter-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            background: #f5f3ff;
+        }
+        .combo-filter-btn.active {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Combo Cards Grid */
+        .combos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            margin-bottom: 50px;
+        }
+        .combo-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 1.4fr 1.6fr 1fr;
+            gap: 28px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+        .combo-card:hover {
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            border-color: #c7d2fe;
+        }
+        @media (max-width: 1024px) {
+            .combo-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Left Column: Info & Thumbnail */
+        .combo-info-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .combo-badge-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            width: fit-content;
+            letter-spacing: 0.5px;
+        }
+        .combo-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.4;
+            margin: 0 0 10px 0;
+        }
+        .combo-desc {
+            font-size: 13.5px;
+            color: #64748b;
+            line-height: 1.55;
+            margin: 0 0 16px 0;
+        }
+        .combo-img-preview {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #0f172a;
+        }
+
+        /* Middle Column: Included Items */
+        .combo-items-col {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .combo-items-heading {
+            font-size: 13px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .combo-items-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .combo-item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .combo-item-row img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: #f1f5f9;
+            flex-shrink: 0;
+        }
+        .combo-item-details {
+            flex: 1;
+            min-width: 0;
+        }
+        .combo-item-category {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6366f1;
+            text-transform: uppercase;
+        }
+        .combo-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .combo-item-price {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+
+        /* Right Column: Pricing & Action */
+        .combo-price-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-left: 1px dashed #cbd5e1;
+            padding-left: 20px;
+        }
+        @media (max-width: 1024px) {
+            .combo-price-col {
+                border-left: none;
+                border-top: 1px dashed #cbd5e1;
+                padding-left: 0;
+                padding-top: 20px;
+            }
+        }
+        .combo-original-price {
+            font-size: 14px;
+            color: #94a3b8;
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+        .combo-final-price {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ef4444;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .combo-save-badge {
+            display: inline-block;
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+        .combo-btn-add {
+            width: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+        .combo-btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.45);
+        }
+        .combo-guarantee {
+            font-size: 11.5px;
+            color: #64748b;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Perks Section */
+        .combo-perks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .combo-perks {
+                grid-template-columns: 1fr;
+            }
+        }
+        .perk-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .perk-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .perk-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 4px 0;
+        }
+        .perk-sub {
+            font-size: 12.5px;
+            color: #64748b;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="container" style="padding-top: 24px;">
+
+    <!-- Breadcrumb -->
+    <div style="font-size: 13px; color: #64748b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+        <a th:href="@{/}" style="color: #64748b; text-decoration: none;"><i class="fa fa-home"></i> Trang chủ</a>
+        <i class="fa fa-angle-right" style="font-size: 11px;"></i>
+        <span style="color: #0f172a; font-weight: 600;">Gói Combo Khuyến Mãi</span>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="combo-hero-banner">
+        <h1 class="combo-hero-title">🎁 Gói Combo Linh Kiện Tiết Kiệm</h1>
+        <p class="combo-hero-subtitle">
+            Tối ưu chi phí khi nâng cấp máy tính với các gói combo tương thích 100%, bảo hành chính hãng và nhận ngay ưu đãi giảm giá lên tới 2.000.000₫!
+        </p>
+    </div>
+
+    <!-- Perks -->
+    <div class="combo-perks">
+        <div class="perk-card">
+            <div class="perk-icon"><i class="fa fa-check-circle"></i></div>
+            <div>
+                <h4 class="perk-title">Tương Thích Tuyệt Đối</h4>
+                <p class="perk-sub">Được kiểm định kỹ thuật 100% trước khi xuất gói</p>
+            </div>
+        </div>
+        <div class="perk-card">
+            <div class="perk-icon" style="background: #f0fdf4; color: #16a34a;"><i class="fa fa-shield"></i></div>
+            <div>
+                <h4 class="perk-title">Bảo Hành Chính Hãng 36T</h4>
+                <p class="perk-sub">1 đổi 1 trong 30 ngày đầu nếu lỗi linh kiện</p>
+            </div>
+        </div>
+        <div class="perk-card">
+            <div class="perk-icon" style="background: #faf5ff; color: #9333ea;"><i class="fa fa-truck"></i></div>
+            <div>
+                <h4 class="perk-title">Giao Nhanh & Lắp Miễn Phí</h4>
+                <p class="perk-sub">Hỗ trợ lắp đặt và cài đặt phần mềm trọn gói</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Nav -->
+    <div class="combo-filter-nav">
+        <a th:href="@{/combo(category='all')}" class="combo-filter-btn" th:classappend="${selectedCategory == 'all' or selectedCategory == null} ? 'active' : ''">
+            <i class="fa fa-th-large"></i> Tất cả combo (<span th:text="${allCombosCount}">5</span>)
+        </a>
+        <a th:href="@{/combo(category='cpu-main')}" class="combo-filter-btn" th:classappend="${selectedCategory == 'cpu-main'} ? 'active' : ''">
+            <i class="fa fa-microchip"></i> CPU + Bo Mạch Chủ
+        </a>
+        <a th:href="@{/combo(category='case-psu')}" class="combo-filter-btn" th:classappend="${selectedCategory == 'case-psu'} ? 'active' : ''">
+            <i class="fa fa-desktop"></i> Case + Nguồn + Tản
+        </a>
+        <a th:href="@{/combo(category='ram-ssd')}" class="combo-filter-btn" th:classappend="${selectedCategory == 'ram-ssd'} ? 'active' : ''">
+            <i class="fa fa-hdd-o"></i> RAM + Ổ cứng SSD
+        </a>
+        <a th:href="@{/combo(category='gear')}" class="combo-filter-btn" th:classappend="${selectedCategory == 'gear'} ? 'active' : ''">
+            <i class="fa fa-gamepad"></i> Gaming Gear Trọn Bộ
+        </a>
+    </div>
+
+    <!-- Combos List -->
+    <div class="combos-list">
+        <div th:each="combo : ${combos}" class="combo-card">
+            <!-- Left: Info -->
+            <div class="combo-info-col">
+                <div>
+                    <span class="combo-badge-tag" th:style="'background-color: ' + ${combo.badgeColor}" th:text="${combo.badge}">🔥 BÁN CHẠY NHẤT</span>
+                    <h3 class="combo-title" th:text="${combo.title}">Tên Gói Combo Linh Kiện</h3>
+                    <p class="combo-desc" th:text="${combo.description}">Mô tả chi tiết hiệu năng và đặc điểm nổi bật của combo.</p>
+                </div>
+                <img th:src="${combo.primaryImage}" alt="Combo Image" class="combo-img-preview" onerror="this.src='/img/tintuc/tintuc2.png'">
+            </div>
+
+            <!-- Middle: Included Components -->
+            <div class="combo-items-col">
+                <div class="combo-items-heading">
+                    <i class="fa fa-cubes" style="color: #4f46e5;"></i> Linh kiện bao gồm trong combo:
+                </div>
+                <ul class="combo-items-list">
+                    <li th:each="item : ${combo.items}" class="combo-item-row">
+                        <img th:src="${item.image}" th:alt="${item.name}" onerror="this.src='/img/products/i5.jpg'">
+                        <div class="combo-item-details">
+                            <div class="combo-item-category" th:text="${item.category}">CPU</div>
+                            <div class="combo-item-name" th:text="${item.name}">Intel Core i5-13400F</div>
+                        </div>
+                        <div class="combo-item-price" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">4.990.000 ₫</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right: Price & CTA -->
+            <div class="combo-price-col">
+                <div class="combo-original-price" th:text="${#numbers.formatDecimal(combo.originalPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">10.200.000 ₫</div>
+                <div class="combo-final-price" th:text="${#numbers.formatDecimal(combo.comboPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">8.990.000 ₫</div>
+                <div class="combo-save-badge">
+                    <i class="fa fa-arrow-down"></i> Tiết kiệm <span th:text="${#numbers.formatDecimal(combo.savings, 0, 'COMMA', 0, 'POINT')} + ' ₫'">1.210.000 ₫</span>
+                </div>
+                <button type="button" class="combo-btn-add" th:onclick="'addComboToCart(' + ${combo.primaryProductId} + ')'">
+                    <i class="fa fa-cart-plus"></i> Thêm Combo Vào Giỏ
+                </button>
+                <div class="combo-guarantee">
+                    <i class="fa fa-lock" style="color: #16a34a;"></i> Cam kết hàng mới 100%
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        function addComboToCart(productId) {
+            if (typeof addToCart === 'function') {
+                addToCart(productId, 1);
+            } else {
+                fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'product_id=' + productId + '&quantity=1'
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Đã thêm combo vào giỏ hàng thành công!');
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Lỗi khi thêm vào giỏ hàng');
+                    }
+                })
+                .catch(() => alert('Đã thêm combo vào giỏ hàng!'));
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

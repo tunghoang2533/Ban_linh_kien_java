@@ -624,8 +624,8 @@
 
                     <!-- Selected Product -->
                     <div class="slot-product" th:if="${build.containsKey(catEntry.key)}">
-                        <img th:src="${build.get(catEntry.key).image != null and !build.get(catEntry.key).image.startsWith('http') ? '/img/products/' + build.get(catEntry.key).image : (build.get(catEntry.key).image != null ? build.get(catEntry.key).image : '/img/logo.jpg')}"
-                             th:alt="${build.get(catEntry.key).name}">
+                        <img th:src="${build.get(catEntry.key).image != null and !build.get(catEntry.key).image.startsWith('http') ? '/img/products/' + build.get(catEntry.key).image : (build.get(catEntry.key).image != null ? build.get(catEntry.key).image : '/img/products/intel-i5-12400f.png')}"
+                             th:alt="${build.get(catEntry.key).name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                         <div class="slot-product-info">
                             <div class="slot-product-name" th:text="${build.get(catEntry.key).name}">Tên sản phẩm</div>
                             <div th:if="${build.get(catEntry.key).socket != null and !build.get(catEntry.key).socket.isBlank()}">
@@ -760,10 +760,10 @@
             let html = '';
             products.forEach(p => {
                 const sockHtml = p.socket ? `<span class="psock">Socket: ${p.socket}</span>` : '';
-                const imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '/img/products/' + p.image) : '/img/logo.jpg';
+                const imgSrc = p.image ? (p.image.startsWith('http') ? p.image : '/img/products/' + p.image) : '/img/products/intel-i5-12400f.png';
                 html += `
                     <div class="prow">
-                        <img src="${imgSrc}" alt="${p.name}">
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='/img/products/intel-i5-12400f.png'">
                         <div class="pinfo">
                             <div class="pname">${p.name}</div>
                             ${sockHtml}

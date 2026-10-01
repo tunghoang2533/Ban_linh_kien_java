@@ -278,8 +278,8 @@
                             <tr th:each="item : ${items}">
                                 <td>
                                     <div class="cart-product-info">
-                                        <img th:src="${item.image != null and !item.image.empty} ? ${item.image} : '/img/product-placeholder.png'"
-                                             alt="Ảnh" class="cart-product-img">
+                                        <img th:src="${item.image != null and !item.image.empty ? (item.image.startsWith('http') ? item.image : (item.image.startsWith('/') ? item.image : '/img/products/' + item.image)) : '/img/products/intel-i5-12400f.png'}"
+                                             alt="Ảnh" class="cart-product-img" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                         <div>
                                             <a th:href="@{'/san-pham/' + ${item.productId}}"
                                                th:text="${item.name}"

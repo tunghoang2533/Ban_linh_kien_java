@@ -507,6 +507,166 @@
             transform: translateY(-3px);
         }
 
+        /* ── FLOATING SIDE BANNERS (FIT FULL WHITE SPACES) ── */
+        .side-banner-container {
+            display: none;
+        }
+        @media (min-width: 1380px) {
+            .side-banner-container {
+                display: block;
+            }
+            .side-banner {
+                position: fixed;
+                top: 95px;
+                z-index: 95;
+                width: calc((100vw - 1240px) / 2 - 24px);
+                max-width: 260px;
+                min-width: 120px;
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                transition: transform 0.25s ease, box-shadow 0.25s ease;
+            }
+            .side-banner:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+            }
+            .side-banner-left {
+                left: 12px;
+            }
+            .side-banner-right {
+                right: 12px;
+            }
+            .side-banner-close {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 24px;
+                height: 24px;
+                background: rgba(15, 23, 42, 0.75);
+                color: #ffffff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                cursor: pointer;
+                z-index: 10;
+                transition: background 0.15s, transform 0.15s;
+                border: none;
+                backdrop-filter: blur(4px);
+            }
+            .side-banner-close:hover {
+                background: #ef4444;
+                transform: scale(1.15);
+            }
+            .side-banner-card {
+                display: flex;
+                flex-direction: column;
+                text-decoration: none;
+                color: #ffffff;
+                background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+                height: 100%;
+                position: relative;
+            }
+            .side-banner-img-wrap {
+                width: 100%;
+                height: 280px;
+                overflow: hidden;
+                background: #020617;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
+            .side-banner-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            .side-banner:hover .side-banner-img {
+                transform: scale(1.05);
+            }
+            .side-banner-body {
+                padding: 14px 12px 16px;
+                text-align: center;
+            }
+            .side-banner-tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                padding: 4px 10px;
+                border-radius: 999px;
+                margin-bottom: 8px;
+                letter-spacing: 0.04em;
+            }
+            .side-banner-tag.orange {
+                background: linear-gradient(135deg, #ff4b2b, #ff416c);
+                color: #fff;
+            }
+            .side-banner-tag.blue {
+                background: linear-gradient(135deg, #2563eb, #38bdf8);
+                color: #fff;
+            }
+            .side-banner-title {
+                font-size: 14px;
+                font-weight: 800;
+                line-height: 1.35;
+                margin: 0 0 6px 0;
+                color: #ffffff;
+            }
+            .side-banner-sub {
+                font-size: 12px;
+                color: #94a3b8;
+                line-height: 1.4;
+                margin-bottom: 12px;
+            }
+            .side-banner-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                font-size: 12.5px;
+                font-weight: 700;
+                padding: 8px 14px;
+                border-radius: 24px;
+                color: #ffffff;
+                text-decoration: none;
+                transition: opacity 0.15s;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .side-banner-btn.orange {
+                background: linear-gradient(135deg, #ff4b2b, #ff416c);
+                box-shadow: 0 4px 12px rgba(255, 65, 108, 0.45);
+            }
+            .side-banner-btn.blue {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+            }
+            .side-banner-btn:hover {
+                opacity: 0.92;
+            }
+        }
+        @media (min-width: 1680px) {
+            .side-banner {
+                max-width: 300px;
+            }
+            .side-banner-img-wrap {
+                height: 330px;
+            }
+            .side-banner-title {
+                font-size: 15px;
+            }
+            .side-banner-sub {
+                font-size: 12.5px;
+            }
+        }
+
+
         @media (max-width: 900px) {
             .footer-grid { grid-template-columns: 1fr 1fr; }
             .main-nav { display: none; }
@@ -517,17 +677,54 @@
         }
     </style>
 </head>
+
 <body>
+
+    <!-- ── FLOATING SIDE BANNERS (LEFT & RIGHT) ── -->
+    <div class="side-banner-container">
+        <!-- Left Side Banner -->
+        <div class="side-banner side-banner-left" id="sideBannerLeft">
+            <button type="button" class="side-banner-close" onclick="document.getElementById('sideBannerLeft').style.display='none'" title="Đóng banner">&times;</button>
+            <a th:href="@{/buildpc}" class="side-banner-card">
+                <div class="side-banner-img-wrap">
+                    <img src="/img/banners/banner1.png" alt="Build PC Banner" class="side-banner-img" onerror="this.src='/img/banners/banner3.png'">
+                </div>
+                <div class="side-banner-body">
+                    <span class="side-banner-tag orange">🔥 BUILD PC</span>
+                    <h4 class="side-banner-title">Tự Build PC Chuẩn Gu</h4>
+                    <div class="side-banner-sub">Giảm 5% khi mua combo linh kiện</div>
+                    <span class="side-banner-btn orange">Build ngay <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Right Side Banner -->
+        <div class="side-banner side-banner-right" id="sideBannerRight">
+            <button type="button" class="side-banner-close" onclick="document.getElementById('sideBannerRight').style.display='none'" title="Đóng banner">&times;</button>
+            <a th:href="@{/products(section='on_sale')}" class="side-banner-card">
+                <div class="side-banner-img-wrap">
+                    <img src="/img/banners/banner2.png" alt="Flash Sale Banner" class="side-banner-img" onerror="this.src='/img/banners/banner4.png'">
+                </div>
+                <div class="side-banner-body">
+                    <span class="side-banner-tag blue">⚡ SIÊU SALE</span>
+                    <h4 class="side-banner-title">Linh Kiện Giảm 30%</h4>
+                    <div class="side-banner-sub">Bảo hành 36T chính hãng 1 đổi 1</div>
+                    <span class="side-banner-btn blue">Săn Deal <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+        </div>
+    </div>
 
     <!-- Top Announcement Bar -->
     <div class="top-nav">
+
         <div class="container">
             <div class="top-nav-left">
                 <i class="fa fa-phone"></i> Hotline: <strong>0865385391</strong>
             </div>
             <div class="top-nav-right">
-                <a th:href="@{/products(section='combo')}"><i class="fa fa-gift" style="color:#f59e0b;"></i> Combo</a>
-                <a th:href="@{/products(section='latest')}"><i class="fa fa-newspaper-o"></i> Tin tức</a>
+                <a th:href="@{/combo}"><i class="fa fa-gift" style="color:#f59e0b;"></i> Combo</a>
+                <a th:href="@{/tin-tuc}"><i class="fa fa-newspaper-o"></i> Tin tức</a>
                 <a th:href="@{/contact}"><i class="fa fa-envelope-o"></i> Liên hệ</a>
                 <a th:href="@{/about}"><i class="fa fa-info-circle"></i> Giới thiệu</a>
             </div>
@@ -658,7 +855,7 @@
                     <h4>Thông tin</h4>
                     <ul>
                         <li><a th:href="@{/about}">Giới thiệu</a></li>
-                        <li><a th:href="@{/products(section='latest')}">Tin tức</a></li>
+                        <li><a th:href="@{/tin-tuc}">Tin tức</a></li>
                         <li><a th:href="@{/contact}">Liên hệ</a></li>
                         <li><a th:href="@{/products}">Sitemap</a></li>
                     </ul>

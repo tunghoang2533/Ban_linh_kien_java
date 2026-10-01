@@ -421,11 +421,9 @@
         <!-- Gallery -->
         <div class="detail-gallery">
             <div class="detail-main-img">
-                <img th:if="${product.image != null and !product.image.isEmpty()}" 
-                     th:src="${product.image.startsWith('http') ? product.image : (product.image.startsWith('/') ? product.image : '/img/products/' + product.image)}" 
+                <img th:src="${product.image != null and !product.image.isEmpty() ? (product.image.startsWith('http') ? product.image : (product.image.startsWith('/') ? product.image : '/img/products/' + product.image)) : '/img/products/intel-i5-12400f.png'}" 
                      th:alt="${product.name}"
-                     onerror="this.src='/img/logo.jpg'">
-                <img th:if="${product.image == null or product.image.isEmpty()}" src="/img/logo.jpg" alt="Product Image">
+                     onerror="this.src='/img/products/intel-i5-12400f.png'">
             </div>
         </div>
 

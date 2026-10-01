@@ -125,4 +125,11 @@ public class Product {
         );
         return price.multiply(factor).setScale(0, RoundingMode.HALF_UP);
     }
+
+    public String getImage() {
+        if (this.image != null && !this.image.trim().isEmpty() && !this.image.equals("i5.jpg") && !this.image.startsWith("1778") && !this.image.startsWith("1780")) {
+            return this.image;
+        }
+        return com.banlinhkien.service.ProductImageInitializer.getImageForProduct(this.id, this.name, this.category != null ? this.category.getId() : null);
+    }
 }

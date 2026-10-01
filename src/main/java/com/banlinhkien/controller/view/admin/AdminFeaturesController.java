@@ -31,6 +31,7 @@ public class AdminFeaturesController {
     private final ShippingZoneRepository shippingZoneRepository;
     private final ProductCommentRepository productCommentRepository;
     private final ShopSettingRepository shopSettingRepository;
+    private final NewsArticleRepository newsArticleRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -182,6 +183,32 @@ public class AdminFeaturesController {
     public String combos(Model model) {
         model.addAttribute("activeNav", "combos");
         return "admin/features/combos";
+    }
+
+    // 12.1 Tin tức & Bài viết
+    @GetMapping("/news")
+    public String news(Model model) {
+        model.addAttribute("activeNav", "news");
+        List<NewsArticle> articles = newsArticleRepository.findAll();
+        model.addAttribute("articles", articles);
+        return "admin/features/news";
+    }
+
+    @PostMapping("/news/save")
+    public String saveNews(@ModelAttribute NewsArticle article, RedirectAttributes redirectAttributes) {
+        if (article.getSlug() == null || article.getSlug().trim().isEmpty()) {
+            article.setSlug(article.getTitle().toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", ""));
+        }
+        newsArticleRepository.save(article);
+        redirectAttributes.addFlashAttribute("successMessage", "Lưu bài viết tin tức thành công!");
+        return "redirect:/admin/news";
+    }
+
+    @PostMapping("/news/{id}/delete")
+    public String deleteNews(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        newsArticleRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Đã xóa bài viết #" + id + " thành công!");
+        return "redirect:/admin/news";
     }
 
     // 13. Thông báo

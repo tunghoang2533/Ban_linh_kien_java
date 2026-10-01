@@ -284,8 +284,8 @@
                             <!-- Items list -->
                             <div style="max-height: 280px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">
                                 <div th:each="item : ${items}" class="order-item-mini">
-                                    <img th:src="${item.image != null and !item.image.empty} ? ${item.image} : '/img/product-placeholder.png'"
-                                         alt="Ảnh">
+                                    <img th:src="${item.image != null and !item.image.empty ? (item.image.startsWith('http') ? item.image : (item.image.startsWith('/') ? item.image : '/img/products/' + item.image)) : '/img/products/intel-i5-12400f.png'}"
+                                         alt="Ảnh" onerror="this.src='/img/products/intel-i5-12400f.png'">
                                     <div style="flex: 1; min-width: 0;">
                                         <div style="font-size: 13px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                                              th:text="${item.name}">Tên sản phẩm</div>
