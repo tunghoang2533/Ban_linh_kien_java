@@ -27,7 +27,7 @@ def set_table_borders(table, color="D3D3D3"):
     )
     tblPr.append(borders)
 
-def add_styled_paragraph(doc, text="", style=None, align=WD_ALIGN_PARAGRAPH.LEFT, space_before=0, space_after=6, line_spacing=1.2):
+def add_styled_paragraph(doc, text="", style=None, align=WD_ALIGN_PARAGRAPH.LEFT, space_before=0, space_after=4, line_spacing=1.2):
     p = doc.add_paragraph(style=style)
     p.alignment = align
     pPr = p.paragraph_format
@@ -154,9 +154,9 @@ def convert_md_to_docx(md_path, docx_path):
                     # Add code content
                     code_text = '\n'.join(code_block_lines)
                     cp = cell.paragraphs[0]
-                    cp.paragraph_format.space_before = Pt(4)
-                    cp.paragraph_format.space_after = Pt(4)
-                    cp.paragraph_format.line_spacing = 1.05
+                    cp.paragraph_format.space_before = Pt(2)
+                    cp.paragraph_format.space_after = Pt(2)
+                    cp.paragraph_format.line_spacing = 1.0
                     crun = cp.add_run(code_text)
                     crun.font.name = "Consolas"
                     crun.font.size = Pt(9.5)
@@ -203,9 +203,9 @@ def convert_md_to_docx(md_path, docx_path):
                             val = row_data[c_idx] if c_idx < len(row_data) else ""
                             cell = tbl.cell(r_idx, c_idx)
                             cp = cell.paragraphs[0]
-                            cp.paragraph_format.space_before = Pt(3)
-                            cp.paragraph_format.space_after = Pt(3)
-                            cp.paragraph_format.line_spacing = 1.1
+                            cp.paragraph_format.space_before = Pt(1)
+                            cp.paragraph_format.space_after = Pt(2)
+                            cp.paragraph_format.line_spacing = 1.02
 
                             if r_idx == 0:
                                 set_cell_background(cell, "EBF3FB")
@@ -216,7 +216,7 @@ def convert_md_to_docx(md_path, docx_path):
                                     set_cell_background(cell, "FFFFFF")
                                 else:
                                     set_cell_background(cell, "F7FAFD")
-                                format_inlines(cp, val, base_font_size=10.5)
+                                format_inlines(cp, val, base_font_size=10)
 
                     # Space after table
                     sp = doc.add_paragraph()
@@ -237,25 +237,25 @@ def convert_md_to_docx(md_path, docx_path):
 
         if stripped.startswith('# '):
             h_text = stripped[2:].strip()
-            p = add_styled_paragraph(doc, align=current_align, space_before=16, space_after=8, line_spacing=1.15)
+            p = add_styled_paragraph(doc, align=current_align, space_before=10, space_after=5, line_spacing=1.1)
             format_inlines(p, h_text, base_font_size=16, is_header=True)
             for run in p.runs:
                 run.font.bold = True
         elif stripped.startswith('## '):
             h_text = stripped[3:].strip()
-            p = add_styled_paragraph(doc, align=current_align, space_before=12, space_after=6, line_spacing=1.15)
+            p = add_styled_paragraph(doc, align=current_align, space_before=7, space_after=4, line_spacing=1.1)
             format_inlines(p, h_text, base_font_size=14, is_header=True)
             for run in p.runs:
                 run.font.bold = True
         elif stripped.startswith('### '):
             h_text = stripped[4:].strip()
-            p = add_styled_paragraph(doc, align=current_align, space_before=8, space_after=4, line_spacing=1.15)
+            p = add_styled_paragraph(doc, align=current_align, space_before=5, space_after=3, line_spacing=1.1)
             format_inlines(p, h_text, base_font_size=13, is_header=True)
             for run in p.runs:
                 run.font.bold = True
         elif stripped.startswith('#### '):
             h_text = stripped[5:].strip()
-            p = add_styled_paragraph(doc, align=current_align, space_before=6, space_after=3, line_spacing=1.15)
+            p = add_styled_paragraph(doc, align=current_align, space_before=4, space_after=2, line_spacing=1.1)
             format_inlines(p, h_text, base_font_size=13, is_header=True)
             for run in p.runs:
                 run.font.italic = True
@@ -263,9 +263,9 @@ def convert_md_to_docx(md_path, docx_path):
             bullet_text = stripped[2:].strip()
             p = doc.add_paragraph(style='List Bullet')
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            p.paragraph_format.space_before = Pt(1)
-            p.paragraph_format.space_after = Pt(3)
-            p.paragraph_format.line_spacing = 1.2
+            p.paragraph_format.space_before = Pt(0)
+            p.paragraph_format.space_after = Pt(2)
+            p.paragraph_format.line_spacing = 1.12
             format_inlines(p, bullet_text, base_font_size=13)
         elif re.match(r'^\d+\.\s+', stripped):
             num_match = re.match(r'^(\d+\.)\s+(.*)', stripped)
@@ -274,9 +274,9 @@ def convert_md_to_docx(md_path, docx_path):
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
             p.paragraph_format.left_indent = Inches(0.25)
-            p.paragraph_format.space_before = Pt(1)
-            p.paragraph_format.space_after = Pt(3)
-            p.paragraph_format.line_spacing = 1.2
+            p.paragraph_format.space_before = Pt(0)
+            p.paragraph_format.space_after = Pt(2)
+            p.paragraph_format.line_spacing = 1.12
             prun = p.add_run(prefix + " ")
             prun.font.name = "Times New Roman"
             prun.font.size = Pt(13)
@@ -292,7 +292,7 @@ def convert_md_to_docx(md_path, docx_path):
                 run.font.color.rgb = RGBColor(108, 117, 125)
         else:
             # Regular paragraph
-            p = add_styled_paragraph(doc, align=current_align, space_before=2, space_after=5, line_spacing=1.25)
+            p = add_styled_paragraph(doc, align=current_align, space_before=1, space_after=4, line_spacing=1.18)
             format_inlines(p, stripped, base_font_size=13)
 
         i += 1
