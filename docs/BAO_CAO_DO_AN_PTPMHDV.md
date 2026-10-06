@@ -51,11 +51,11 @@
 
 ## LỜI CẢM ƠN
 
-Trước tiên, nhóm thực hiện đồ án xin bày tỏ lòng biết ơn sâu sắc tới Ban Giám hiệu Nhà trường, Ban Chủ nhiệm Khoa Công nghệ Thông tin và toàn thể quý thầy cô trong Bộ môn Công nghệ Phần mềm đã xây dựng một chương trình đào tạo có tính hệ thống, cập nhật và bám sát nhu cầu thực tiễn của ngành công nghiệp phần mềm. Những kiến thức nền tảng về phân tích – thiết kế hệ thống, cơ sở dữ liệu, lập trình hướng đối tượng và kiến trúc phần mềm mà nhóm tiếp thu được trong suốt quá trình học tập chính là cơ sở lý luận quan trọng để nhóm hoàn thành đồ án này.
+Trước tiên, nhóm sinh viên thực hiện bài tập lớn xin bày tỏ lòng biết ơn sâu sắc tới Ban Giám hiệu Nhà trường, Ban Chủ nhiệm Khoa Công nghệ Thông tin và toàn thể quý thầy cô trong Bộ môn Công nghệ Phần mềm đã xây dựng một chương trình đào tạo có tính hệ thống, cập nhật và bám sát nhu cầu thực tiễn của ngành công nghiệp phần mềm. Những kiến thức nền tảng về phân tích – thiết kế hệ thống, cơ sở dữ liệu, lập trình hướng đối tượng và kiến trúc phần mềm mà nhóm tiếp thu được trong suốt quá trình học tập chính là cơ sở lý luận quan trọng để nhóm hoàn thành bài tập lớn này.
 
 Nhóm xin gửi lời cảm ơn chân thành và trân trọng nhất tới **giảng viên hướng dẫn học phần Phát triển phần mềm hướng dịch vụ**. Thầy/Cô không chỉ truyền đạt các nguyên lý cốt lõi của kiến trúc hướng dịch vụ (Service-Oriented Architecture), chuẩn thiết kế RESTful API và mô hình Client – Server, mà còn đưa ra những nhận xét phản biện sắc bén ở từng giai đoạn: từ khâu lựa chọn và định danh đề tài, mô hình hóa nghiệp vụ bằng UML, thiết kế hợp đồng dịch vụ (service contract), cho đến khâu kiểm thử tích hợp và đánh giá chất lượng hệ thống. Chính những góp ý đó đã giúp nhóm nhận diện và khắc phục nhiều khiếm khuyết nghiêm trọng về mặt kiến trúc — đặc biệt là bài toán tranh chấp tồn kho khi nhiều người dùng đặt mua đồng thời và bài toán bảo đảm tính bất biến (idempotency) của webhook thanh toán.
 
-Nhóm cũng xin cảm ơn cộng đồng kỹ thuật mã nguồn mở, đặc biệt là các nhóm phát triển Spring Framework, Hibernate ORM và Thymeleaf, cùng đội ngũ kỹ thuật của Công ty Cổ phần Giải pháp Thanh toán Việt Nam (VNPAY) đã công bố tài liệu tích hợp chi tiết trên môi trường Sandbox, tạo điều kiện cho sinh viên tiếp cận một cổng thanh toán điện tử đạt chuẩn công nghiệp trong phạm vi một đồ án môn học.
+Nhóm cũng xin cảm ơn cộng đồng kỹ thuật mã nguồn mở, đặc biệt là các nhóm phát triển Spring Framework, Hibernate ORM và Thymeleaf, cùng đội ngũ kỹ thuật của Công ty Cổ phần Giải pháp Thanh toán Việt Nam (VNPAY) đã công bố tài liệu tích hợp chi tiết trên môi trường Sandbox, tạo điều kiện cho sinh viên tiếp cận một cổng thanh toán điện tử đạt chuẩn công nghiệp trong phạm vi một bài tập lớn môn học.
 
 Cuối cùng, nhóm xin cảm ơn gia đình và các bạn sinh viên cùng lớp đã hỗ trợ, động viên và tham gia thử nghiệm sản phẩm, cung cấp phản hồi hữu ích để nhóm hoàn thiện trải nghiệm người dùng của ứng dụng client.
 
@@ -77,11 +77,11 @@ Nhóm xin trân trọng cảm ơn!
 
 ## LỜI CAM ĐOAN
 
-Nhóm sinh viên thực hiện đồ án xin cam đoan những nội dung sau đây:
+Nhóm sinh viên thực hiện bài tập lớn xin cam đoan những nội dung sau đây:
 
-**Thứ nhất**, đồ án môn học với đề tài *"Xây dựng dịch vụ API và ứng dụng client cho hệ thống bán hàng linh kiện PC trực tuyến"* là công trình do chính nhóm trực tiếp nghiên cứu, phân tích, thiết kế, lập trình và kiểm thử dưới sự hướng dẫn khoa học của giảng viên phụ trách học phần Phát triển phần mềm hướng dịch vụ.
+**Thứ nhất**, bài tập lớn học phần với đề tài *"Xây dựng dịch vụ API và ứng dụng client cho hệ thống bán hàng linh kiện PC trực tuyến"* là công trình do chính nhóm trực tiếp nghiên cứu, phân tích, thiết kế, lập trình và kiểm thử dưới sự hướng dẫn khoa học của giảng viên phụ trách học phần Phát triển phần mềm hướng dịch vụ.
 
-**Thứ hai**, toàn bộ mã nguồn của hệ thống — bao gồm tầng dịch vụ backend (`com.banlinhkien.*`), các bộ điều khiển REST API, các lớp nghiệp vụ, các lớp truy cập dữ liệu, các khuôn mẫu giao diện Thymeleaf và bộ kiểm thử tự động — được nhóm tự xây dựng và được lưu trữ công khai, có lịch sử phiên bản đầy đủ tại kho mã nguồn Git của nhóm. Không có thành phần nào được sao chép nguyên trạng từ đồ án của nhóm khác hoặc từ sản phẩm thương mại đang lưu hành.
+**Thứ hai**, toàn bộ mã nguồn của hệ thống — bao gồm tầng dịch vụ backend (`com.banlinhkien.*`), các bộ điều khiển REST API, các lớp nghiệp vụ, các lớp truy cập dữ liệu, các khuôn mẫu giao diện Thymeleaf và bộ kiểm thử tự động — được nhóm tự xây dựng và được lưu trữ công khai, có lịch sử phiên bản đầy đủ tại kho mã nguồn Git của nhóm. Không có thành phần nào được sao chép nguyên trạng từ bài tập lớn của nhóm khác hoặc từ sản phẩm thương mại đang lưu hành.
 
 **Thứ ba**, các thư viện, framework và dịch vụ của bên thứ ba được sử dụng trong hệ thống (Spring Boot, Spring Security, Spring Data JPA, Hibernate ORM, Thymeleaf, Bootstrap, MySQL Connector/J, Project Lombok, Jackson, cổng thanh toán VNPAY Sandbox, dịch vụ suy luận ngôn ngữ Groq) đều là các thành phần được phát hành hợp pháp theo giấy phép mã nguồn mở hoặc theo điều khoản sử dụng công khai của nhà cung cấp. Nhóm sử dụng đúng vai trò kỹ thuật của từng thành phần và đã trích dẫn đầy đủ trong mục **Tài liệu tham khảo**.
 
@@ -89,7 +89,7 @@ Nhóm sinh viên thực hiện đồ án xin cam đoan những nội dung sau đ
 
 **Thứ năm**, các nội dung lý thuyết được kế thừa từ giáo trình, tiêu chuẩn kỹ thuật và tài liệu chuyên ngành đều được trích dẫn theo chuẩn IEEE và liệt kê đầy đủ trong danh mục tài liệu tham khảo.
 
-Nhóm xin chịu hoàn toàn trách nhiệm trước Hội đồng chấm đồ án và trước Nhà trường về tính trung thực của những cam đoan nêu trên.
+Nhóm xin chịu hoàn toàn trách nhiệm trước Giảng viên phụ trách học phần và Bộ môn Công nghệ thông tin về tính trung thực của những cam đoan nêu trên.
 
 <div align="right">
 
@@ -118,7 +118,7 @@ Nhóm xin chịu hoàn toàn trách nhiệm trước Hội đồng chấm đồ 
 | 2 | Mục tiêu nghiên cứu |
 | 3 | Đối tượng và phạm vi nghiên cứu |
 | 4 | Phương pháp nghiên cứu |
-| 5 | Cấu trúc đồ án |
+| 5 | Cấu trúc của báo cáo |
 | | **CHƯƠNG 1. GIỚI THIỆU TỔNG QUAN VỀ ĐỀ TÀI** |
 | 1.1 | Đặt vấn đề và tính cấp thiết của đề tài |
 | 1.1.1 | Bối cảnh thị trường linh kiện máy tính tại Việt Nam |
@@ -287,11 +287,11 @@ Nhóm xin chịu hoàn toàn trách nhiệm trước Hội đồng chấm đồ 
 
 ## DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT
 
-| Từ viết tắt | Thuật ngữ đầy đủ | Giải nghĩa trong phạm vi đồ án |
+| Từ viết tắt | Thuật ngữ đầy đủ | Giải nghĩa trong phạm vi bài tập lớn |
 |---|---|---|
 | **ACID** | Atomicity, Consistency, Isolation, Durability | Bốn thuộc tính bảo đảm tính đúng đắn của giao dịch cơ sở dữ liệu; được hệ thống khai thác qua engine InnoDB và annotation `@Transactional` khi trừ kho và ghi đơn hàng. |
-| **AJAX** | Asynchronous JavaScript and XML | Kỹ thuật gửi yêu cầu HTTP bất đồng bộ từ trình duyệt mà không tải lại trang; trong đồ án được hiện thực bằng Fetch API. |
-| **API** | Application Programming Interface | Giao diện lập trình ứng dụng; trong đồ án chỉ tập hợp các endpoint REST do backend công bố cho client tiêu thụ. |
+| **AJAX** | Asynchronous JavaScript and XML | Kỹ thuật gửi yêu cầu HTTP bất đồng bộ từ trình duyệt mà không tải lại trang; trong bài tập lớn được hiện thực bằng Fetch API. |
+| **API** | Application Programming Interface | Giao diện lập trình ứng dụng; trong bài tập lớn chỉ tập hợp các endpoint REST do backend công bố cho client tiêu thụ. |
 | **BCrypt** | Blowfish-based Crypt | Hàm băm mật khẩu một chiều có muối (salt) và hệ số chi phí (cost factor), dùng để lưu mật khẩu người dùng. |
 | **CSRF** | Cross-Site Request Forgery | Tấn công giả mạo yêu cầu liên trang. |
 | **DAO** | Data Access Object | Đối tượng truy cập dữ liệu; vai trò này do các interface `*Repository` đảm nhiệm. |
@@ -410,7 +410,7 @@ Nghiên cứu, vận dụng nguyên lý kiến trúc hướng dịch vụ và ch
 
 | Nội dung loại trừ | Lý do |
 |---|---|
-| Phân rã thành microservices triển khai độc lập, service registry, API gateway | Vượt quy mô một đồ án môn học; hệ thống hiện tại là monolith phân tầng theo định hướng dịch vụ |
+| Phân rã thành microservices triển khai độc lập, service registry, API gateway | Vượt quy mô một bài tập lớn môn học; hệ thống hiện tại là monolith phân tầng theo định hướng dịch vụ |
 | Ứng dụng client di động gốc (Android/iOS) | Nằm ngoài phạm vi; tuy nhiên hợp đồng API đã được thiết kế sẵn sàng cho việc mở rộng |
 | Xác thực không trạng thái bằng JWT/OAuth2 | Hệ thống sử dụng xác thực dựa trên phiên của Spring Security; JWT được nêu ở phần hướng phát triển |
 | Triển khai lên hạ tầng đám mây, container hóa, điều phối Kubernetes | Được nêu ở phần hướng phát triển |
@@ -419,7 +419,7 @@ Nghiên cứu, vận dụng nguyên lý kiến trúc hướng dịch vụ và ch
 
 ### 3.3. Phạm vi thời gian và dữ liệu
 
-Đồ án được thực hiện trong một học kỳ. Cơ sở dữ liệu thử nghiệm được khởi tạo từ tệp `db_ban_linh_kien.sql` chứa dữ liệu mẫu cho toàn bộ danh mục sản phẩm, thương hiệu, đơn vị hành chính Việt Nam ba cấp, vùng vận chuyển và tài khoản người dùng mẫu.
+Bài tập lớn được thực hiện trong khuôn khổ học phần. Cơ sở dữ liệu thử nghiệm được khởi tạo từ tệp `db_ban_linh_kien.sql` chứa dữ liệu mẫu cho toàn bộ danh mục sản phẩm, thương hiệu, đơn vị hành chính Việt Nam ba cấp, vùng vận chuyển và tài khoản người dùng mẫu.
 
 ## 4. Phương pháp nghiên cứu
 
@@ -455,7 +455,7 @@ Nhóm áp dụng ba mức kiểm thử:
 
 Kết quả được thu thập từ nhật ký thực thi bộ kiểm thử, ảnh chụp màn hình các luồng nghiệp vụ và kiểm tra trực tiếp trạng thái cơ sở dữ liệu sau mỗi kịch bản. Việc đánh giá được thực hiện bằng cách đối chiếu từng yêu cầu đã đặt ra ở mục 2.2 với kết quả thực nghiệm, phân loại theo ba mức: *Hoàn thành*, *Hoàn thành một phần*, *Chưa thực hiện*.
 
-## 5. Cấu trúc đồ án
+## 5. Cấu trúc của báo cáo
 
 Ngoài phần Mở đầu, Kết luận, Tài liệu tham khảo và Phụ lục, nội dung chính của báo cáo được tổ chức thành ba chương:
 
@@ -739,13 +739,13 @@ flowchart TD
 | **Ranh giới giao dịch** | Mơ hồ, dễ rò rỉ giữa các tầng | Tường minh tại biên phương thức dịch vụ | `@Transactional` đặt tại `CheckoutService.placeOrder()` và `AdminOrderService.updateStatus()` |
 | **Khả năng tiến hóa độc lập** | Thấp, sửa giao diện có nguy cơ làm hỏng nghiệp vụ | Cao, giao diện và dịch vụ tiến hóa độc lập | Đã kiểm chứng: đổi bố cục Thymeleaf không cần sửa lớp dịch vụ |
 | **Khả năng mở rộng quy mô** | Nhân bản toàn bộ ứng dụng | Có thể nhân bản hoặc tách riêng dịch vụ có tải cao | Hiện là monolith phân tầng; đường tiến hóa đã được chuẩn bị |
-| **Độ phức tạp triển khai** | Thấp (một tiến trình, một gói) | Trung bình đến cao (đặc biệt nếu tách microservices) | Chọn monolith phân tầng để giữ độ phức tạp phù hợp quy mô đồ án |
+| **Độ phức tạp triển khai** | Thấp (một tiến trình, một gói) | Trung bình đến cao (đặc biệt nếu tách microservices) | Chọn monolith phân tầng để giữ độ phức tạp phù hợp quy mô bài tập lớn |
 | **Độ trễ nội bộ** | Rất thấp (gọi phương thức trong bộ nhớ) | Cao hơn nếu dịch vụ tách tiến trình | Thấp: các dịch vụ chạy cùng JVM, chỉ giao tiếp ngoài với VNPAY |
 | **Tính nhất quán dữ liệu** | Dễ đạt (một cơ sở dữ liệu, một giao dịch) | Khó hơn nếu tách cơ sở dữ liệu (cần saga/2PC) | Đạt tính nhất quán mạnh nhờ dùng chung một cơ sở dữ liệu ACID |
 
 ### 1.2.5. Định vị kiến trúc của hệ thống trong phổ SOA
 
-Một sai lầm thường gặp trong các báo cáo đồ án là tự nhận hệ thống Spring Boot của mình là "microservices". Nhóm chủ động tránh sai lầm này bằng cách định vị kiến trúc một cách chính xác.
+Một sai lầm thường gặp trong các báo cáo bài tập lớn là tự nhận hệ thống Spring Boot của mình là "microservices". Nhóm chủ động tránh sai lầm này bằng cách định vị kiến trúc một cách chính xác.
 
 **Hình 1.2 – Sơ đồ định vị kiến trúc của hệ thống trong phổ SOA**
 
@@ -1236,7 +1236,7 @@ HACOM là nhà phân phối và bán lẻ có thế mạnh về máy tính lắp
 
 Từ kết quả khảo sát, nhóm rút ra ba nhận định:
 
-**Nhận định thứ nhất:** Các nền tảng thương mại có lợi thế áp đảo về quy mô dữ liệu, độ phủ hàng hóa, hạ tầng và mạng lưới hậu cần. Đây là những lợi thế mà một đồ án môn học không thể và không nên cạnh tranh.
+**Nhận định thứ nhất:** Các nền tảng thương mại có lợi thế áp đảo về quy mô dữ liệu, độ phủ hàng hóa, hạ tầng và mạng lưới hậu cần. Đây là những lợi thế mà một bài tập lớn môn học không thể và không nên cạnh tranh.
 
 **Nhận định thứ hai:** Tất cả các nền tảng khảo sát đều có **khoảng trống chung về hỗ trợ ra quyết định kỹ thuật**. Không nền tảng nào cung cấp đồng thời ba năng lực: (i) ràng buộc tương thích cứng ở mức không cho phép tạo cấu hình sai; (ii) tính tổng công suất tiêu thụ tức thời; (iii) sinh cấu hình tự động theo ngân sách và mục đích sử dụng.
 
@@ -4662,7 +4662,7 @@ Trên cơ sở kết quả thực nghiệm đã trình bày, hệ thống đạt
 
 **Thứ năm – Kiến trúc phân tầng nghiêm ngặt và khả năng kiểm thử cao.** Việc tiêm phụ thuộc qua hàm khởi tạo trên toàn bộ mã nguồn cho phép khởi tạo thủ công mọi lớp dịch vụ trong kiểm thử đơn vị, dẫn tới bộ 55 ca kiểm thử với thời gian thực thi hợp lý. Tỷ lệ mã kiểm thử trên mã nghiệp vụ đạt 24,3%, và quan trọng hơn con số này là việc **mỗi quy tắc nghiệp vụ trong số 30 quy tắc đều có ít nhất một ca kiểm thử tương ứng**.
 
-**Thứ sáu – Khả năng truy vết và kiểm toán đầy đủ.** Mọi biến động tồn kho sinh một bản ghi `warehouse_logs` kèm lý do và tham chiếu đơn hàng; mọi phép chuyển trạng thái sinh một bản ghi `order_status_history` kèm người thực hiện. Sự kết hợp của hai nhật ký này cho phép tái dựng hoàn chỉnh lịch sử của bất kỳ đơn hàng nào — một yêu cầu thiết yếu đối với hệ thống thương mại thực tế nhưng thường bị bỏ qua trong các đồ án môn học.
+**Thứ sáu – Khả năng truy vết và kiểm toán đầy đủ.** Mọi biến động tồn kho sinh một bản ghi `warehouse_logs` kèm lý do và tham chiếu đơn hàng; mọi phép chuyển trạng thái sinh một bản ghi `order_status_history` kèm người thực hiện. Sự kết hợp của hai nhật ký này cho phép tái dựng hoàn chỉnh lịch sử của bất kỳ đơn hàng nào — một yêu cầu thiết yếu đối với hệ thống thương mại thực tế nhưng thường bị bỏ qua trong các bài tập lớn môn học.
 
 ### 3.5.2. Đánh giá hạn chế và phân tích nguyên nhân
 
