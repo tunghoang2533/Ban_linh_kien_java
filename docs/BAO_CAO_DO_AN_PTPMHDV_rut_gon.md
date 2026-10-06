@@ -80,7 +80,7 @@ Thị trường linh kiện PC Việt Nam có đặc thù: sản phẩm phải t
 - **Kiểm thử:** JUnit 5 (đơn vị), @SpringBootTest (tích hợp), ExecutorService (đồng thời)
 - **Đánh giá:** Đối chiếu yêu cầu với kết quả
 
-## 5. Cấu trúc đồ án
+## 5. Cấu trúc của báo cáo
 
 **Chương 1:** Giới thiệu tổng quan (bối cảnh, lý thuyết, công nghệ)
 **Chương 2:** Phân tích và thiết kế (yêu cầu, UML, kiến trúc, CSDL, API, client)
@@ -383,7 +383,7 @@ public String processPaymentResult(Map<String, String> vnpParams) {
 
 | Hạn chế | Nguyên nhân | Giải pháp |
 |---|---|---|
-| Kiến trúc monolith | Quy mô đồ án | Phân rã microservices |
+| Kiến trúc monolith | Quy mô bài tập lớn | Phân rã microservices |
 | Giỏ hàng lưu trong phiên | Đơn giản hóa | Chuyển sang Redis |
 | Chưa HATEOAS | Quy mô client | Bổ sung hypermedia |
 | Chưa API versioning | Chưa cần thiết | Áp dụng /api/v1/... |
